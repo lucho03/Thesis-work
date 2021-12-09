@@ -2,17 +2,49 @@
 <html lang="en-US">
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="/Thesis-work/Mysite/main/static/main.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/main.css">
+
+        {% block title %}
+        <title></title>
+        {% endblock title %}
+
     </head>
 
     <body>
-        <div class="navigation_bar">
-            <ul>
-                <li><a href="dashboard">Dashboard</a></li>
-                <li><a>Tickets</a></li>
-                <li><a>Knoledge Base</a></li>
-                <li><a>About Us</a></li>
-            </ul>
-        </div>
+        <header>
+            <nav class="navbar navbar-expand-lg bg-light justify-content-center">
+                <p class="navbar-brand">HelpDesk</p>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">Tickets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">Knoledge Base</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about us">About Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        
+        <section>
+            {% block content %} {% endblock content %}
+            
+            {% block about_us %} {% endblock about_us %}
+        </section>
+        
+        <footer class="page-footer font-small blue">
+            <div class="footer-copyright text-center py-3">
+                © 2022 Copyright:
+            </div>
+        </footer>
     </body>
 </html>
