@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.urls import path
 
-from main.views import View
+from main.views import Tickets, View
 
 urlpatterns = [
-    path('', View.dashboard),
+    path('', View.main_page),
     path('dashboard', View.dashboard),
-    path('about us', View.about_us)
+    path('about us', View.about_us),
+    path('tickets', Tickets.tickets)
 ]
