@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" class="form-control" placeholder="Enter name" value="{{value}}">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-control" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label>Your issue/question</label>
+            <textarea type="text" class="form-control input-lg" rows="6"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Send ticket</button>
+      </form>
+</div>
+{% endblock content %}
