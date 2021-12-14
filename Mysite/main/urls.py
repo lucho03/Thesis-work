@@ -7,5 +7,6 @@ urlpatterns = [
     path('', View.main_page),
     path('dashboard', View.dashboard),
     path('about us', View.about_us),
-    path('tickets', Tickets.tickets)
+    path('tickets', Tickets.get_tickets),
+    path('send_ticket', Tickets.set_ticket)
 ]
