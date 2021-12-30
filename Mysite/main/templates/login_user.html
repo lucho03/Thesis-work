@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        {% if messages %}
+            {% for message in messages%}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Log in</button>
+    </form>
+</div>
+{% endblock %}
