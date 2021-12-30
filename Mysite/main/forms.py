@@ -1,19 +1,28 @@
 from django import forms
 from django.db.models import fields
-from django.forms.widgets import TextInput
+from django.forms import widgets
+from django.forms.widgets import PasswordInput, TextInput
 from .models import TicketModel
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class UserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name','username', 'email', 'password1', 'password2']
+    
+    def save(self):
+        user = super(UserForm, self).save(commit=True)
+        return user
 
 class TicketModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TicketModelForm, self).__init__(*args, **kwargs)
-        self.fields['author'].required = False
-        self.fields['email'].required = False
         self.fields['text'].required = False
     
     class Meta:
         model = TicketModel
-        fields = ['author', 'email', 'text']
+        fields = ['text']
         widgets = {
-            'author': TextInput({'placeholder':('Name')}),
-            'email': TextInput({'placeholder':('Email'), 'value':('email@gmail.com')})
+            'text': TextInput({'placeholder':('What do you want to know?')})
         }
