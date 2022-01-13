@@ -1,3 +1,5 @@
+from curses.textpad import Textbox
+from xml.dom.minidom import Text
 from django import forms
 from django.db.models import fields
 from django.forms import widgets
@@ -9,7 +11,7 @@ from django.contrib.auth.models import User
 class UserForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name','username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2']
     
     def save(self):
         user = super(UserForm, self).save(commit=True)
