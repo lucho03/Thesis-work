@@ -24,7 +24,7 @@ class View(TemplateView):
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
             else:
-                return HttpResponse(request.POST)
+                messages.error(request, 'Invalid password!')
         form = UserForm()
         return render(request, 'login_user.html', {'form': form})
     
