@@ -41,6 +41,7 @@ class View(TemplateView):
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     login(request, user)
+                    #print(user.user_permissions.all())
                     return HttpResponseRedirect('/dashboard')
                 else:
                     messages.error(request, 'Wrong username or password!')
