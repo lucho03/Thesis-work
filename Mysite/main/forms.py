@@ -1,9 +1,5 @@
-from curses.textpad import Textbox
-from xml.dom.minidom import Text
 from django import forms
-from django.db.models import fields
-from django.forms import widgets
-from django.forms.widgets import PasswordInput, TextInput
+from django.forms import Textarea
 from .models import TicketModel
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -26,5 +22,7 @@ class TicketModelForm(forms.ModelForm):
         model = TicketModel
         fields = ['text']
         widgets = {
-            'text': TextInput({'placeholder':('What do you want to know?')})
+            'text': Textarea(
+                    {'placeholder':('What do you want to know?')}
+                )
         }
