@@ -33,7 +33,7 @@ class View(TemplateView):
             form = UserForm(request.POST)
             if form.is_valid():
                 user = form.save()
-                user.user_permissions.add(Permission.objects.get(name='can answer tickets'))
+                #user.user_permissions.add(Permission.objects.get(name='can answer tickets'))
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
             else:
