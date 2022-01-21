@@ -27,23 +27,37 @@
                 <p class="navbar-brand">HelpDesk</p>
                 <div class="collapse navbar-collapse">
                     {% if user.is_authenticated %}
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="dashboard">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="tickets">Tickets</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="send_ticket">Send</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link">Knoledge Base</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about us">About Us</a>
-                        </li>
-                    </ul>
+                        {% if perms.main.answer_tickets %}
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link">Knoledge Base</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="list_tickets">All Tickets</a>
+                            </li>
+                        </ul>
+                        {% else %}
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="tickets">Tickets</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="send_ticket">Send</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link">Knoledge Base</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="about us">About Us</a>
+                            </li>
+                        </ul>
+                        {% endif %}
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item ml-auto">
                             <a class="nav-link" href="logout_user">Log out</a>
