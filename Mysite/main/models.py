@@ -1,17 +1,16 @@
-import email
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.timezone import now
-
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
+from django.utils.timezone import now, localtime
+import datetime
 
 class TicketModel(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
-    date = models.DateTimeField(default=now, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         permissions = (
-            ('answer_tickets', 'can answer tickets'),
+            ('create_tickets', 'can create tickets'),
+            ('rewrite_tickets', 'can change tickets'),
+            ('answer_tickets', 'can answer tickets')
         )

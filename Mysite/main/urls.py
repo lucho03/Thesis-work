@@ -10,9 +10,10 @@ urlpatterns = [
     path('about us', View.about_us),
     path('tickets', Tickets.get_tickets),
     path('send_ticket', Tickets.set_ticket),
+    path(r'^(?P<id>\d+)', Tickets.rewrite, name='rewrite'),
     path('register', View.register, name='register'),
     path('logout_user', View.logout_user),
     path('log_in', View.log_in),
     path('list_tickets', Tickets.list_tickets),
-    path('answer/<id>', Tickets.answer, name='answer')
+    path(r'^(?P<id>)', Tickets.answer, name='answer')
 ]

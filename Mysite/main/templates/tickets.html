@@ -12,12 +12,28 @@
             <div class="col border">
                 <p>{{ticket.author.email}}</p><br>
             </div>
+            <div class="col border">
+                <p>{{ticket.date}}</p><br>
+            </div>
         </div>
         <div class="row">
             <div class="col border">
                 <p>{{ticket.text}}</p><br>
+                <p>{{ticket.id}}</p>
             </div>
         </div>
+        {% if perms.main.answer_tickets %}
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-info" role="button" value="{{ticket.id}}" name="answer" >Answer</button>
+            </form>
+        {% endif %}
+        {% if perms.main.rewrite_tickets %}
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-info" role="button" value="{{ticket.id}}" name="change" >Change</button>
+            </form>
+        {% endif %}
     </div>
 {% endfor %}
 
