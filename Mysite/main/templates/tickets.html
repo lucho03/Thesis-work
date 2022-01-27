@@ -20,6 +20,12 @@
             <div class="col border">
                 <p>{{ticket.text}}</p><br>
                 <p>{{ticket.id}}</p>
+                {% if ticket.num_answers != 0%}
+                    <p>Answers: {{ticket.num_answers}}</p>
+                {% endif %}
+                <p>Priority: {{ticket.get_priority_display}}</p>
+                <p>Type: {{ticket.get_type_display}}</p>
+                <p>Status: {{ticket.get_status_display}}</p>
             </div>
         </div>
         {% if perms.main.answer_tickets %}
