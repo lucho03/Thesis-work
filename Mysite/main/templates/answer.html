@@ -7,7 +7,26 @@
 {% block content %}
 {% load crispy_forms_tags %}
 <div class="container">
-    <h1>{{ticket.text}}</h1>
+    {% if messages %}
+        {% for message in messages%}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{message}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container">
+        <h4>{{ticket.text}}</h4>
+    </div>
+    <div class="container mt-4">
+        {% for answer in answers %}
+            <div class="col border">
+                <p>{{answer.number}}  {{answer.text}}</p>
+            </div>
+        {% endfor %}
+    </div>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
