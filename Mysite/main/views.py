@@ -8,8 +8,8 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import TicketModelForm, UserForm
-from .models import TicketModel 
+from .forms import AnswerModelForm, TicketModelForm, UserForm
+from .models import AnswerModel, TicketModel 
 
 from django.contrib import messages
 
@@ -80,21 +80,23 @@ class Tickets(TemplateView):
         form = TicketModelForm(request.POST)
         if request.method == 'POST':    
             if form.is_valid():
-                curr = form.save(commit=False)
-                curr.author = request.user
-                curr.save()
-                return render(request, 'send_ticket.html', {'form':TicketModelForm(request.GET)})
+                if len(form.data.get('text')) is 0:
+                    messages.error(request, 'Empty ticket!')
+                else:
+                    curr = form.save(commit=False)
+                    curr.author = request.user
+                    curr.save()
+                return HttpResponseRedirect('/tickets')
             
         return render(request, 'send_ticket.html', {'form':form})
     
     @login_required(login_url='/log_in')
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def get_tickets(request):
-        tickets = TicketModel.objects.all().filter(author=request.user)
+        tickets = TicketModel.objects.all().filter(author=request.user).order_by('priority')
         id = None
         if request.POST.get('change') is not None:
             id = int(request.POST.get('change'))
-        print(id)
         if id is not None:
             return HttpResponseRedirect(reverse('rewrite', kwargs={'id':id}))
         return render(request, 'tickets.html', {'tickets':tickets})
@@ -112,11 +114,10 @@ class Tickets(TemplateView):
     @login_required(login_url='/log_in')
     @permission_required('main.answer_tickets', raise_exception=True)
     def list_tickets(request):
-        tickets = TicketModel.objects.all()
+        tickets = TicketModel.objects.all().order_by('priority')
         id = None
         if request.POST.get('answer') is not None:
             id = int(request.POST.get('answer'))
-        print(id)
         if id is not None:
             return HttpResponseRedirect(reverse('answer', kwargs={'id':id}))
         return render(request, 'tickets.html', {'tickets':tickets})
@@ -125,8 +126,18 @@ class Tickets(TemplateView):
     @permission_required('main.answer_tickets', raise_exception=True)
     def answer(request, id):
         ticket = TicketModel.objects.get(pk=id)
-        form = TicketModelForm(request.POST or None)
-        if form.is_valid():
-            #form.save()
-            return HttpResponseRedirect('/list_tickets')
-        return render(request, 'answer.html', {'ticket':ticket, 'form':form})
+        answers = AnswerModel.objects.all().filter(ticket=ticket)
+        form = AnswerModelForm(request.POST)
+        if request.method == 'POST':    
+            if form.is_valid():
+                if len(form.data.get('text')) is 0:
+                    messages.error(request, 'Empty answer!')
+                else:
+                    curr = form.save(commit=False)
+                    curr.ticket = ticket
+                    ticket.num_answers += 1
+                    curr.number = ticket.num_answers
+                    curr.save()
+                    ticket.save()
+                    return HttpResponseRedirect('/list_tickets')
+        return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers})
