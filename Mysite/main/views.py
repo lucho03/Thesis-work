@@ -71,8 +71,10 @@ class View(TemplateView):
             tickets = TicketModel.objects.all().filter(author=request.user)
         if request.user.has_perm('main.answer_tickets'):
             tickets = TicketModel.objects.all()
-        info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
-        return render(request, 'dashboard.html', {'info':info})
+        if tickets is not None:
+            info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
+            return render(request, 'dashboard.html', {'info':info})
+        return render(request, 'dashboard.html')
 
     def about_us(request):
         return render(request, 'about_us.html')
