@@ -66,8 +66,13 @@ class View(TemplateView):
         return render(request, 'login_user.html', {'form': form})
     
     def dashboard(request):
-        print(request.user.user_permissions.all())
-        return render(request, 'dashboard.html')
+        tickets = None
+        if request.user.has_perm('main.create_tickets'):
+            tickets = TicketModel.objects.all().filter(author=request.user)
+        if request.user.has_perm('main.answer_tickets'):
+            tickets = TicketModel.objects.all()
+        info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
+        return render(request, 'dashboard.html', {'info':info})
 
     def about_us(request):
         return render(request, 'about_us.html')
@@ -80,7 +85,7 @@ class Tickets(TemplateView):
         form = TicketModelForm(request.POST)
         if request.method == 'POST':    
             if form.is_valid():
-                if len(form.data.get('text')) is 0:
+                if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty ticket!')
                 else:
                     curr = form.save(commit=False)
@@ -130,7 +135,7 @@ class Tickets(TemplateView):
         form = AnswerModelForm(request.POST)
         if request.method == 'POST':    
             if form.is_valid():
-                if len(form.data.get('text')) is 0:
+                if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty answer!')
                 else:
                     curr = form.save(commit=False)
