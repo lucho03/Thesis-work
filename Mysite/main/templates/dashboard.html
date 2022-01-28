@@ -5,14 +5,49 @@
 {% endblock title %}
 
 {% block content %}
-<div>
+<div class="container">
     {% if user.is_authenticated %}
         <h1>{{user.username}}</h1>
         <h2>{{user.id}}</h2>
         <h3>{{user.email}}</h3>
+        <div class="row">
+            <div class="col border">
+                <p>All tickets</p><br>
+                <p></p>
+            </div>
+            <div class="col border">
+                <p>Urgent</p><br>
+            </div>
+            <div class="col border">
+                <p>High</p><br>
+            </div>
+            <div class="col border">
+                <p>Medium</p><br>
+            </div>
+            <div class="col border">
+                <p>Low</p><br>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col border">
+                <p>{{info.0}}</p><br>
+                <p></p>
+            </div>
+            <div class="col border">
+                <p>{{info.1}}</p><br>
+            </div>
+            <div class="col border">
+                <p>{{info.2}}</p><br>
+            </div>
+            <div class="col border">
+                <p>{{info.3}}</p><br>
+            </div>
+            <div class="col border">
+                <p>{{info.4}}</p><br>
+            </div>
+        </div>
     {% else %}
         <h3>There aren't users</h3>
     {% endif %}
-    <h1>Proba</h1>
 </div>
 {% endblock content %}
