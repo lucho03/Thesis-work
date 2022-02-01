@@ -135,14 +135,14 @@ class Tickets(TemplateView):
         if request.POST.get('delete') is not None:
             id = int(request.POST.get('delete'))
             tickets.get(id=id).delete()
-            '''
+            
             send_mail(
                 'Delete tickets{}'.format(id),
                 request.POST.get('because'),
-                'l.valentinov.ivanov@gmail.com',
+                'agent.hd.cs@gmail.com',
                 ['l.valentinov.ivanov@gmail.com']
             )
-            '''
+            
         print(request.POST.get('because'))
         return render(request, 'tickets.html', {'tickets':tickets})
     
