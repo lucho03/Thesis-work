@@ -17,7 +17,7 @@
         </div>
         {% endfor %}
     {% endif %}
-    <div class="container">
+    <div class="container mt-4 border">
         <h4>{{ticket.text}}</h4>
     </div>
     <div class="container mt-4">
@@ -27,11 +27,13 @@
             </div>
         {% endfor %}
     </div>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-success">Send ticket</button>
-    </form>
+    {% if perms.main.answer_tickets %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">Send ticket</button>
+        </form>
+    {% endif %}
 </div>
 
 {% endblock content %}
