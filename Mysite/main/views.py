@@ -2,16 +2,19 @@ from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from django.contrib.auth.models import Permission
-
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required, permission_required
-from .forms import AnswerModelForm, TicketModelForm, UserForm
-from .models import AnswerModel, TicketModel 
 
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Permission
+from django.contrib.auth.decorators import login_required, permission_required
+
+from .forms import AnswerModelForm, TicketModelForm, UserForm
+from .models import AnswerModel, TicketModel
+from .emails import check_emails, send_erasing_email, send_answering_email
+
+
+check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -28,7 +31,8 @@ class View(TemplateView):
             else:
                 messages.error(request, 'Invalid password!')
         form = UserForm()
-        return render(request, 'login_user.html', {'form': form})
+        kind = 1
+        return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
     def register(request):
         if request.method == 'POST':
@@ -42,7 +46,8 @@ class View(TemplateView):
             else:
                 messages.error(request, 'Invalid password!')
         form = UserForm()
-        return render(request, 'login_user.html', {'form': form})
+        kind = 2
+        return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
     def logout_user(request):
         logout(request)
@@ -62,7 +67,8 @@ class View(TemplateView):
                     messages.error(request, 'Wrong username or password!')
         
         form = AuthenticationForm()
-        return render(request, 'login_user.html', {'form': form})
+        kind = 3
+        return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
     def dashboard(request):
         tickets = None
@@ -78,9 +84,8 @@ class View(TemplateView):
     def about_us(request):
         return render(request, 'about_us.html')
 
-
+@login_required(login_url='/log_in')
 class Tickets(TemplateView):
-    @login_required(login_url='/log_in')
     @permission_required('main.create_tickets', raise_exception=True)
     def set_ticket(request):
         form = TicketModelForm(request.POST)
@@ -96,7 +101,6 @@ class Tickets(TemplateView):
             
         return render(request, 'send_ticket.html', {'form':form})
     
-    @login_required(login_url='/log_in')
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def get_tickets(request):
         tickets = TicketModel.objects.all().filter(author=request.user).order_by('priority')
@@ -108,7 +112,6 @@ class Tickets(TemplateView):
             return HttpResponseRedirect(reverse('view_answers', kwargs={'id':id}))
         return render(request, 'tickets.html', {'tickets':tickets})
     
-    @login_required(login_url='/log_in')
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def rewrite(request, id):
         ticket = TicketModel.objects.get(pk=id)
@@ -118,14 +121,12 @@ class Tickets(TemplateView):
             return HttpResponseRedirect('/tickets')
         return render(request, 'send_ticket.html', {'ticket':ticket, 'form':form})
     
-    @login_required(login_url='/log_in')
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def view_answers(request, id):
         ticket = TicketModel.objects.get(pk=id)
         answers = AnswerModel.objects.all().filter(ticket=ticket)
         return render(request, 'answer.html', {'ticket':ticket, 'answers':answers})
     
-    @login_required(login_url='/log_in')
     @permission_required('main.answer_tickets', raise_exception=True)
     def list_tickets(request):
         tickets = TicketModel.objects.all().order_by('priority')
@@ -134,19 +135,11 @@ class Tickets(TemplateView):
             return HttpResponseRedirect(reverse('answer', kwargs={'id':id}))
         if request.POST.get('delete') is not None:
             id = int(request.POST.get('delete'))
-            tickets.get(id=id).delete()
-            
-            send_mail(
-                'Delete tickets{}'.format(id),
-                request.POST.get('because'),
-                'agent.hd.cs@gmail.com',
-                ['l.valentinov.ivanov@gmail.com']
-            )
-            
-        print(request.POST.get('because'))
+            ticket = tickets.get(id=id)
+            send_erasing_email(ticket.text, request.POST.get('because'), request.user.username, ticket.author.email)
+            ticket.delete()
         return render(request, 'tickets.html', {'tickets':tickets})
     
-    @login_required(login_url='/log_in')
     @permission_required('main.answer_tickets', raise_exception=True)
     def answer(request, id):
         ticket = TicketModel.objects.get(pk=id)
