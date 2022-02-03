@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 
 {% block title %}
-<title>Log In</title>
+{% if kind == 1 %}
+    <title>Register as agent</title>
+{% elif kind == 2%}
+    <title>Register</title>
+{% else %}
+    <title>Log In</title>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -20,7 +26,11 @@
             {% endfor %}
         {% endif %}
         {{ form|crispy }}
-        <button type="submit" class="btn btn-success">Log in</button>
+        {% if kind == 3%}
+            <button type="submit" class="btn btn-success">Log in</button>
+        {% else %}
+            <button type="submit" class="btn btn-success">Sign Up</button>
+        {% endif %}
     </form>
 </div>
 {% endblock %}
