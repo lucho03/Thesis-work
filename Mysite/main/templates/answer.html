@@ -31,7 +31,8 @@
         <form method="post">
             {% csrf_token %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-success">Send ticket</button>
+            <button type="submit" class="btn btn-success">Answer</button>
+            
         </form>
     {% endif %}
 </div>
