@@ -16,6 +16,7 @@ from .emails import check_emails, send_erasing_email, send_answering_email
 
 check_emails()
 
+
 class View(TemplateView):
     def main_page(request):
         return render(request, 'main_page.html')
