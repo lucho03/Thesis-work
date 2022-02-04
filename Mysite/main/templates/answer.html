@@ -32,7 +32,7 @@
             {% csrf_token %}
             {{ form|crispy }}
             <button type="submit" class="btn btn-success">Answer</button>
-            
+            <button type="submit" class="btn btn-warning" value="yes" name="send_to_mail">Answer and send to mail</button>
         </form>
     {% endif %}
 </div>
