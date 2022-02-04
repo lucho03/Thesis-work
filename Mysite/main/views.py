@@ -99,7 +99,6 @@ class Tickets(TemplateView):
                     curr.author = request.user
                     curr.save()
                 return HttpResponseRedirect('/tickets')
-            
         return render(request, 'send_ticket.html', {'form':form})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
@@ -157,5 +156,7 @@ class Tickets(TemplateView):
                     curr.number = ticket.num_answers
                     curr.save()
                     ticket.save()
+                    if request.POST.get('send_to_mail') == 'yes':
+                        send_answering_email('Answer of ...', ticket.text, curr.text, request.user.username, ticket.author.email)
                     return HttpResponseRedirect('/list_tickets')
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers})
