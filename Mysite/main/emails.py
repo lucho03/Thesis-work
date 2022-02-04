@@ -20,7 +20,7 @@ def check_emails():
 def send_erasing_email(text, reason, agent, receiver):
     send_mail(
         'Your ticket was deleted!',
-        'Ticket: ' + text + '\nReason: ' + reason + '\nDeleted by' + agent,
+        'Ticket: ' + text + '\nReason: ' + reason + '\nDeleted by ' + agent,
         settings.EMAIL_HOST_USER,
         [receiver],
         fail_silently=False
@@ -29,7 +29,7 @@ def send_erasing_email(text, reason, agent, receiver):
 def send_answering_email(title, text, answer, agent, receiver):
     send_mail(
         title,
-        'Ticket: ' + text + '\n\nAnswer: ' + answer + '\nSent by' + agent,
+        'Ticket: ' + text + '\n\nAnswer: ' + answer + '\nSent by ' + agent,
         settings.EMAIL_HOST_USER,
         [receiver],
         fail_silently=False
