@@ -17,14 +17,19 @@
         </div>
         {% endfor %}
     {% endif %}
-    <div class="container mt-4 border">
-        <h4>{{ticket.text}}</h4>
-    </div>
-    <div class="container mt-4">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4 class="card-title text-center">{{ticket.title}}</h4>
+        </div>
+        <div class="card-body">
+            <h6 class="card-text">{{ticket.text}}</h6>
+        </div>
         {% for answer in answers %}
-            <div class="col border">
-                <p>{{answer.number}}  {{answer.text}}</p>
-            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <p>{{answer.number}}.  {{answer.text}}</p>
+                </li>
+            </ul>
         {% endfor %}
     </div>
     {% if perms.main.answer_tickets %}
