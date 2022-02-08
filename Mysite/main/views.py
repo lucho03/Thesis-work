@@ -136,7 +136,7 @@ class Tickets(TemplateView):
         if request.POST.get('delete') is not None:
             id = int(request.POST.get('delete'))
             ticket = tickets.get(id=id)
-            send_erasing_email(ticket.text, request.POST.get('because'), request.user.username, ticket.author.email)
+            send_erasing_email(ticket.title, ticket.text, request.POST.get('because'), request.user.username, ticket.author.email)
             ticket.delete()
         return render(request, 'tickets.html', {'tickets':tickets})
     
@@ -157,6 +157,6 @@ class Tickets(TemplateView):
                     curr.save()
                     ticket.save()
                     if request.POST.get('send_to_mail') == 'yes':
-                        send_answering_email('Answer of ...', ticket.text, curr.text, request.user.username, ticket.author.email)
+                        send_answering_email(ticket.title, ticket.text, curr.text, request.user.username, ticket.author.email)
                     return HttpResponseRedirect('/list_tickets')
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers})
