@@ -23,6 +23,7 @@ class TicketModel(models.Model):
     )
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.TextField(default='Title')
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     priority = models.CharField(max_length=1, choices=PRIORITIES, default='4')
