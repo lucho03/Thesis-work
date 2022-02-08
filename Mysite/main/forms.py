@@ -1,6 +1,6 @@
 from dataclasses import field
 from django import forms
-from django.forms import Textarea, widgets
+from django.forms import TextInput, Textarea, widgets
 from .models import AnswerModel, TicketModel
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -17,14 +17,18 @@ class UserForm(UserCreationForm):
 class TicketModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TicketModelForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = False
         self.fields['text'].required = False
         self.fields['priority'].required = False
         self.fields['type'].required = False
     
     class Meta:
         model = TicketModel
-        fields = ['text', 'priority', 'type']
+        fields = ['title', 'text', 'priority', 'type']
         widgets = {
+            'title': TextInput(
+                    {'placeholder': ('Title')}
+            ),
             'text': Textarea(
                     {'placeholder':('What do you want to know?')}
                 )
