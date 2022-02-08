@@ -10,28 +10,42 @@
 {% for ticket in tickets %}
     <form method="post">
         {% csrf_token %}
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col border">
-                    <p class="lead">{{ticket.author}}</p><br>
+        <div class="container d-flex justify-content-center mt-5">
+            <div class="card mb-3" style="width:50rem" id="card-{{ticket.id}}">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <p class="lead">{{ticket.author}}</p><br>
+                        </div>
+                        <div class="col">
+                            <p>{{ticket.author.email}}</p><br>
+                        </div>
+                        <div class="col">
+                            <p>{{ticket.date}}</p><br>
+                        </div>
+                    </div>
                 </div>
-                <div class="col border">
-                    <p>{{ticket.author.email}}</p><br>
-                </div>
-                <div class="col border">
-                    <p>{{ticket.date}}</p><br>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col border">
-                    <p>{{ticket.text}}</p><br>
-                    <p>{{ticket.id}}</p>
+                <div class="card-body">
+                    <h5 class="card-title text-center">{{ticket.title}}</h5>
+                    <div class="border">
+                        <p class="card-text m-3">{{ticket.text}}</p>
+                    </div>
                     {% if ticket.num_answers != 0%}
                         <p>Answers: {{ticket.num_answers}}</p>
                     {% endif %}
                     <p>Priority: {{ticket.get_priority_display}}</p>
                     <p>Type: {{ticket.get_type_display}}</p>
                     <p>Status: {{ticket.get_status_display}}</p>
+                    <div class="d-flex justify-content-center">
+                        {% if perms.main.answer_tickets %}
+                            <button class="btn btn-info mr-1" role="button" value="{{ticket.id}}" name="answer">Answer</button>
+                            <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#{{ticket.id}}">Remove</button>
+                        {% endif %}
+                        {% if perms.main.rewrite_tickets %}
+                            <button class="btn btn-info mr-1" role="button" value="{{ticket.id}}" name="change" >Change</button>
+                            <button class="btn btn-info ml-1" role="button" value="{{ticket.id}}" name="answers">Answers</button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="modal fade" id="{{ticket.id}}" tabindex="-1" role="dialog">
@@ -44,32 +58,25 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" class="form-control" id="input-because" placeholder="Why?" name="because" onkeyup="enable()">
+                            <input type="text" class="form-control" id="input-{{ticket.id}}" placeholder="Why?" name="because" onkeyup="enable(id, 'delete-{{ticket.id}}')">
+                            <small class="font-weight-bold d-flex justify-content-center">Your answer will be sent to the author of this ticket!</small>
                         </div>
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button class="btn btn-danger" type="submit" value="{{ticket.id}}" name="delete" id="delete-id" disabled>Delete</button>
+                            <button class="btn btn-danger" type="submit" value="{{ticket.id}}" name="delete" id="delete-{{ticket.id}}" disabled>Delete</button>
                         </div>
                     </div>
                 </div>
             </div>
-            {% if perms.main.answer_tickets %}
-                <button class="btn btn-info" role="button" value="{{ticket.id}}" name="answer">Answer</button>
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#{{ticket.id}}">Remove</button>
-            {% endif %}
-            {% if perms.main.rewrite_tickets %}
-                <button class="btn btn-info" role="button" value="{{ticket.id}}" name="change" >Change</button>
-                <button class="btn btn-info" role="button" value="{{ticket.id}}" name="answers">Answers</button>
-            {% endif %}
         </div>
     </form>
     <script>
-        function enable() {
-            if(document.getElementById('input-because').value.length > 0) {
-                document.getElementById('delete-id').disabled = false;
+        function enable(input_id, button_id) {
+            if(document.getElementById(input_id).value.length > 0) {
+                document.getElementById(button_id).disabled = false;
             }
             else {
-                document.getElementById('delete-id').disabled = true;
+                document.getElementById(button_id).disabled = true;
             }
         }
     </script>
