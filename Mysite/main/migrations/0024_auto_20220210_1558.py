@@ -11,10 +11,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name='answermodel',
-            name='comments',
-        ),
-        migrations.RemoveField(
             model_name='ticketmodel',
             name='comments',
         ),
