@@ -16,6 +16,7 @@ class TicketModel(models.Model):
         ('O', 'Order')
     )
     STATUSES = (
+        ('N', 'New'),
         ('O', 'Open'),
         ('P', 'Pending'),
         ('R', 'Resolved'),
@@ -25,10 +26,11 @@ class TicketModel(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.TextField(default='Title')
     text = models.TextField()
+    ticket_comments = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
-    priority = models.CharField(max_length=1, choices=PRIORITIES, default='4')
+    priority = models.CharField(max_length=1, choices=PRIORITIES, default='3')
     type = models.CharField(max_length=1, choices=TYPES, default='Q')
-    status = models.CharField(max_length=1, choices=STATUSES, default='O')
+    status = models.CharField(max_length=1, choices=STATUSES, default='N')
     num_answers = models.IntegerField(default=0)
 
     class Meta:
@@ -41,4 +43,15 @@ class TicketModel(models.Model):
 class AnswerModel(models.Model):
     ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
     text = models.TextField()
+    answer_comments = models.IntegerField(default=0)
+    number = models.IntegerField(default=0)
+
+class CommentTicketModel(models.Model):
+    ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
+    text = models.TextField(default='T')
+    number = models.IntegerField(default=0)
+
+class CommentAnswerModel(models.Model):
+    answer = models.ForeignKey(AnswerModel, on_delete=models.CASCADE)
+    text = models.TextField(default='T')
     number = models.IntegerField(default=0)
