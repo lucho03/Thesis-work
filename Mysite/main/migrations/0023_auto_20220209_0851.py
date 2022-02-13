@@ -11,11 +11,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='answermodel',
-            name='comments',
-            field=models.TextField(default='Comments'),
-        ),
-        migrations.AlterField(
             model_name='ticketmodel',
             name='comments',
             field=models.TextField(default='Comments'),
