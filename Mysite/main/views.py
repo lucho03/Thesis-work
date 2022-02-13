@@ -1,3 +1,4 @@
+import re
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
@@ -10,11 +11,11 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.decorators import login_required, permission_required
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm
-from .models import AnswerModel, TicketModel
+from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email
 
 
-check_emails()
+#check_emails()
 
 
 class View(TemplateView):
@@ -84,6 +85,18 @@ class View(TemplateView):
 
     def about_us(request):
         return render(request, 'about_us.html')
+    
+    def profile(request):
+        if request.method == 'POST':
+            if len(request.POST.get('change-username')) > 0:
+                request.user.username = request.POST.get('change-username')
+            if len(request.POST.get('change-email')) > 0:
+                request.user.email = request.POST.get('change-username')
+            request.user.save()
+            print(request.POST.get('change-username'))
+            print(request.POST.get('change-email'))
+        num_tickets = TicketModel.objects.all().filter(author=request.user).count()
+        return render(request, 'profile.html', {'tickets':num_tickets})
 
 @login_required(login_url='/log_in')
 class Tickets(TemplateView):
@@ -104,13 +117,22 @@ class Tickets(TemplateView):
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def get_tickets(request):
         tickets = TicketModel.objects.all().filter(author=request.user).order_by('priority')
+        comments = CommentTicketModel.objects.all()
+        more = [[comment for comment in comments.all().filter(ticket=ticket)] for ticket in tickets.all()]
         if request.POST.get('change') is not None:
             id = int(request.POST.get('change'))
             return HttpResponseRedirect(reverse('rewrite', kwargs={'id':id}))
         if request.POST.get('answers') is not None:
             id = int(request.POST.get('answers'))
             return HttpResponseRedirect(reverse('view_answers', kwargs={'id':id}))
-        return render(request, 'tickets.html', {'tickets':tickets})
+        if request.POST.get('comment') is not None:
+            id = int(request.POST.get('comment'))
+            ticket = tickets.get(id=id)
+            ticket.ticket_comments += 1
+            comment = CommentTicketModel.objects.create(ticket=ticket, text=request.POST.get('more-info'), number=ticket.ticket_comments)
+            comment.save()
+            ticket.save()
+        return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def rewrite(request, id):
@@ -130,6 +152,7 @@ class Tickets(TemplateView):
     @permission_required('main.answer_tickets', raise_exception=True)
     def list_tickets(request):
         tickets = TicketModel.objects.all().order_by('priority')
+        comments = CommentTicketModel.objects.all()
         if request.POST.get('answer') is not None:
             id = int(request.POST.get('answer'))
             return HttpResponseRedirect(reverse('answer', kwargs={'id':id}))
@@ -138,7 +161,7 @@ class Tickets(TemplateView):
             ticket = tickets.get(id=id)
             send_erasing_email(ticket.title, ticket.text, request.POST.get('because'), request.user.username, ticket.author.email)
             ticket.delete()
-        return render(request, 'tickets.html', {'tickets':tickets})
+        return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
     def answer(request, id):
@@ -153,6 +176,7 @@ class Tickets(TemplateView):
                     curr = form.save(commit=False)
                     curr.ticket = ticket
                     ticket.num_answers += 1
+                    ticket.status = 'O'
                     curr.number = ticket.num_answers
                     curr.save()
                     ticket.save()
