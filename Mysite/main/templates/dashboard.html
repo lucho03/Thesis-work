@@ -7,10 +7,29 @@
 {% block content %}
 <div class="container">
     {% if user.is_authenticated %}
-        <h1>{{user.username}}</h1>
-        <h2>{{user.id}}</h2>
-        <h3>{{user.email}}</h3>
-        <div class="row">
+        <div class="card mt-3" style="width: 25rem;">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Urgent</th>
+                            <th scope="col">High</th>
+                            <th scope="col">Medium</th>
+                            <th scope="col">Low</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Opa</th>
+                            <td>Ha</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mt-5">
             <div class="col border">
                 <p>All tickets</p><br>
                 <p></p>
