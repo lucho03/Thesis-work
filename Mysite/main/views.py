@@ -1,4 +1,3 @@
-import re
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
@@ -10,7 +9,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission
 from django.contrib.auth.decorators import login_required, permission_required
 
-from .forms import AnswerModelForm, TicketModelForm, UserForm
+from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email
 
@@ -23,8 +22,9 @@ class View(TemplateView):
         return render(request, 'main_page.html')
     
     def register_agent(request):
+        print("Proba")
         if request.method == 'POST':
-            form = UserForm(request.POST)
+            form = AgentForm(request.POST)
             if form.is_valid():
                 user = form.save()
                 user.user_permissions.add(Permission.objects.get(name='can answer tickets'))
@@ -32,7 +32,7 @@ class View(TemplateView):
                 return HttpResponseRedirect('/dashboard')
             else:
                 messages.error(request, 'Invalid password!')
-        form = UserForm()
+        form = AgentForm()
         kind = 1
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
@@ -91,10 +91,12 @@ class View(TemplateView):
             if len(request.POST.get('change-username')) > 0:
                 request.user.username = request.POST.get('change-username')
             if len(request.POST.get('change-email')) > 0:
-                request.user.email = request.POST.get('change-username')
+                request.user.email = request.POST.get('change-email')
+            if len(request.POST.get('change-first-name')) > 0:
+                request.user.first_name = request.POST.get('change-first-name')
+            if len(request.POST.get('change-last-name')) > 0:
+                request.user.last_name = request.POST.get('change-last-name')
             request.user.save()
-            print(request.POST.get('change-username'))
-            print(request.POST.get('change-email'))
         num_tickets = TicketModel.objects.all().filter(author=request.user).count()
         return render(request, 'profile.html', {'tickets':num_tickets})
 

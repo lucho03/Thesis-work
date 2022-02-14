@@ -32,18 +32,17 @@
                     </div>
                     {% if perms.main.answer_tickets %}
                         {% if ticket.priority == '1' %}
-                            <a href="https://meet.google.com/fvm-fpes-nnw">This link is for meet</a>
-                            <button class="btn btn-danger mt-2" type="button" data-toggle="modal" data-target="#meet-{{ticket.id}}">Create Google Meet</button>
+                            <button class="btn btn-danger mt-2 btn-block" type="button" data-toggle="modal" data-target="#meet-{{ticket.id}}">Create Google Meet</button>
                         {% endif %}
                     {% endif %}
-                    <button class="btn btn-info mt-2" role="button" value="{{ticket.id}}" name="answers" id="answers-view-{{ticket.id}}">
+                    <button class="btn btn-info mt-2 btn-block" role="button" value="{{ticket.id}}" name="answers" id="answers-view-{{ticket.id}}">
                         Answers
                         <span class="badge badge-light">
                             {{ticket.num_answers}}
                         </span>
                     </button>
                     <p class="mt-2">
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-{{ticket.id}}" aria-expanded="false" aria-controls="collapse-{{ticket.id}}" id="comments-view-{{ticket.id}}">
+                        <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#collapse-{{ticket.id}}" aria-expanded="false" aria-controls="collapse-{{ticket.id}}" id="comments-view-{{ticket.id}}">
                             Comments
                             <span class="badge badge-light">
                                 {{ticket.ticket_comments}}
@@ -138,6 +137,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <p></p><a href="https://meet.google.com/landing?authuser=2" target="_blank">Create a new meet</a> and send it to user</p>
                             <input type="text" class="form-control" id="input-meet-{{ticket.id}}" name="meet" onkeyup="enable(id, '#meeting-{{ticket.id}}')">
                             <small class="font-weight-bold d-flex justify-content-center">Send mail for a google meet </small>
                         </div>

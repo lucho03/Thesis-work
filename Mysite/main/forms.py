@@ -1,6 +1,5 @@
-from dataclasses import field
 from django import forms
-from django.forms import TextInput, Textarea, widgets
+from django.forms import TextInput, Textarea
 from .models import AnswerModel, TicketModel
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -8,10 +7,19 @@ from django.contrib.auth.models import User
 class UserForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
     
     def save(self):
         user = super(UserForm, self).save(commit=True)
+        return user
+
+class AgentForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'password1', 'password2']
+
+    def save(self):
+        user = super(AgentForm, self).save(commit=True)
         return user
 
 class TicketModelForm(forms.ModelForm):
