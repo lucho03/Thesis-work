@@ -6,6 +6,12 @@ function enable(input_id, button_id) {
         $(button_id).attr('disabled', true);
     }
 }
+
+function click_row(id_row, id_ticket) {
+    url = window.location.href.replace('dashboard', '^(%3FPid)'.replace('id', id_ticket));
+    $(location).prop('href', url);
+};
+
 /*
 function enable2() {
     if('{{ticket.priority}}' == '1') {
