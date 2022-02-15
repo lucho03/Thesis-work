@@ -80,7 +80,8 @@ class View(TemplateView):
             tickets = TicketModel.objects.all()
         if tickets is not None:
             info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
-            return render(request, 'dashboard.html', {'info':info})
+            tickets = TicketModel.objects.all()
+            return render(request, 'dashboard.html', {'info':info, 'tickets':tickets})
         return render(request, 'dashboard.html')
 
     def about_us(request):
