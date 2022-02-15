@@ -7,66 +7,35 @@
 {% block content %}
 <div class="container">
     {% if user.is_authenticated %}
-        <div class="card mt-3" style="width: 25rem;">
+        <div class="card mt-5" style="width: 70rem;">
             <div class="card-body">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Urgent</th>
-                            <th scope="col">High</th>
-                            <th scope="col">Medium</th>
-                            <th scope="col">Low</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th>Opa</th>
-                            <td>Ha</td>
-                        </tr>
+                        {% for ticket in tickets %}
+                            <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}')">
+                                <th>{{ticket.title}}</th>
+                                <td>{{ticket.get_type_display}}</td>
+                                <td>{{ticket.author}}</td>
+                                <td>{{ticket.get_status_display}}</td>
+                                <td>{{ticket.date}}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <div class="row mt-5">
-            <div class="col border">
-                <p>All tickets</p><br>
-                <p></p>
-            </div>
-            <div class="col border">
-                <p>Urgent</p><br>
-            </div>
-            <div class="col border">
-                <p>High</p><br>
-            </div>
-            <div class="col border">
-                <p>Medium</p><br>
-            </div>
-            <div class="col border">
-                <p>Low</p><br>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col border">
-                <p>{{info.0}}</p><br>
-                <p></p>
-            </div>
-            <div class="col border">
-                <p>{{info.1}}</p><br>
-            </div>
-            <div class="col border">
-                <p>{{info.2}}</p><br>
-            </div>
-            <div class="col border">
-                <p>{{info.3}}</p><br>
-            </div>
-            <div class="col border">
-                <p>{{info.4}}</p><br>
             </div>
         </div>
     {% else %}
         <h3>There aren't users</h3>
     {% endif %}
+    <script src="static/main.js"></script>
 </div>
 {% endblock content %}
