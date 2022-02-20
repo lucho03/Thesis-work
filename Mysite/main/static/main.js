@@ -7,30 +7,17 @@ function enable(input_id, button_id) {
     }
 }
 
-function click_row(id_row, id_ticket) {
-    url = window.location.href.replace('dashboard', '^(%3FPid)'.replace('id', id_ticket));
+$("#file-id").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings("#file-label-id").addClass("selected").html(fileName);
+});
+
+function click_row(id_row, id_ticket, permission) {
+    if(permission === 'True') {
+        url = window.location.href.replace('dashboard', 'list_tickets#card-'+id_ticket);
+    }
+    else {
+        url = window.location.href.replace('dashboard', 'tickets#card-'+id_ticket);
+    }
     $(location).prop('href', url);
 };
-
-/*
-function enable2() {
-    if('{{ticket.priority}}' == '1') {
-        $('#card-{{ticket.id}}').addClass('border-danger');
-    }
-    if('{{ticket.ticket_comments}}' == 0) {
-        $('#comments-view-{{ticket.id}}').attr('disabled', 'disabled');
-    }
-    if('{{ticket.num_answers}}' == 0) {
-        $('#answers-view-{{ticket.id}}').attr('disabled', 'disabled');
-    }
-}
-*/
-if('{{ticket.priority}}' == '1') {
-    $('#card-{{ticket.id}}').addClass('border-danger');
-}
-if('{{ticket.ticket_comments}}' == 0) {
-    $('#comments-view-{{ticket.id}}').attr('disabled', 'disabled');
-}
-if('{{ticket.num_answers}}' == 0) {
-    $('#answers-view-{{ticket.id}}').attr('disabled', 'disabled');
-}
