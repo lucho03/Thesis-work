@@ -56,13 +56,13 @@
                     </button>
                     <button class="btn btn-primary btn-block" id="file-button-{{ticket.id}}" name="file-button-name" value="{{ticket.id}}">
                         Files
-                        {% if ticket.file != null %}
+                        {% if ticket.file == "" %}
                             <span class="badge badge-light">
-                                {{ticket.filename}}
+                                NO
                             </span>
                         {% else %}
                             <span class="badge badge-light">
-                                0
+                                {{ticket.filename}}
                             </span>
                         {% endif %}
                     </button>
@@ -197,6 +197,7 @@
             }
             if('{{ticket.file}}'.length === 0) {
                 $('#file-button-{{ticket.id}}').attr('disabled', true);
+                $('.badge badge-light').append('<p>OPa</p>');
             }
         });
         
