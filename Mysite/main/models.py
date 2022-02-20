@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -32,6 +33,10 @@ class TicketModel(models.Model):
     type = models.CharField(max_length=1, choices=TYPES, default='Q')
     status = models.CharField(max_length=1, choices=STATUSES, default='N')
     num_answers = models.IntegerField(default=0)
+    file = models.FileField(upload_to='main/static/capture_files_folder', null=True)
+
+    def filename(self):
+        return os.path.basename(self.file.name)
 
     class Meta:
         permissions = (
