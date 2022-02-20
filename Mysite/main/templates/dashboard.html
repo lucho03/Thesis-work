@@ -21,7 +21,7 @@
                     </thead>
                     <tbody>
                         {% for ticket in tickets %}
-                            <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}')">
+                            <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
                                 <th>{{ticket.title}}</th>
                                 <td>{{ticket.get_type_display}}</td>
                                 <td>{{ticket.author}}</td>
