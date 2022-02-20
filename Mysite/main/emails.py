@@ -47,6 +47,7 @@ def create_ticket(email_listener, messages):
         else:
             ticket.title = title
             ticket.text = text
+            ticket.file = messages[key].get('attachments')[0].replace('./', '')
             if 'problem' or 'Problem' in text:
                 ticket.type = 'P'
                 ticket.priority = '2'
