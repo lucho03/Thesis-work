@@ -1,3 +1,5 @@
+import os
+from django.http import FileResponse
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
@@ -13,9 +15,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email
 
-
 #check_emails()
-
 
 class View(TemplateView):
     def main_page(request):
@@ -105,16 +105,18 @@ class View(TemplateView):
 class Tickets(TemplateView):
     @permission_required('main.create_tickets', raise_exception=True)
     def set_ticket(request):
-        form = TicketModelForm(request.POST)
-        if request.method == 'POST':    
+        form = TicketModelForm(request.POST, request.FILES)
+        if request.method == 'POST':
+            print(request.FILES['file-name'])
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty ticket!')
                 else:
                     curr = form.save(commit=False)
                     curr.author = request.user
+                    curr.file = request.FILES['file-name']
                     curr.save()
-                return HttpResponseRedirect('/tickets')
+                    return HttpResponseRedirect('/tickets')
         return render(request, 'send_ticket.html', {'form':form})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
@@ -135,7 +137,12 @@ class Tickets(TemplateView):
             comment = CommentTicketModel.objects.create(ticket=ticket, text=request.POST.get('more-info'), number=ticket.ticket_comments)
             comment.save()
             ticket.save()
-        return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
+        if request.POST.get('file-button-name') is not None:
+            id = int(request.POST.get('file-button-name'))
+            ticket = tickets.get(id=id)
+            filepath = str(ticket.file)
+            return FileResponse(open(filepath, 'rb'))
+        return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments, 'more':more})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def rewrite(request, id):
@@ -150,7 +157,15 @@ class Tickets(TemplateView):
     def view_answers(request, id):
         ticket = TicketModel.objects.get(pk=id)
         answers = AnswerModel.objects.all().filter(ticket=ticket)
-        return render(request, 'answer.html', {'ticket':ticket, 'answers':answers})
+        comments = CommentAnswerModel.objects.all()
+        if request.POST.get('comment') is not None:
+            id = int(request.POST.get('comment'))
+            answer = answers.get(id=id)
+            answer.answer_comments += 1
+            comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more-info'), number=answer.answer_comments)
+            comment.save()
+            answer.save()
+        return render(request, 'answer.html', {'ticket':ticket, 'answers':answers, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
     def list_tickets(request):
@@ -186,4 +201,6 @@ class Tickets(TemplateView):
                     if request.POST.get('send_to_mail') == 'yes':
                         send_answering_email(ticket.title, ticket.text, curr.text, request.user.username, ticket.author.email)
                     return HttpResponseRedirect('/list_tickets')
+            if request.POST.get('comment') is not None:
+                print(request.POST.get('more-info'))
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers})
