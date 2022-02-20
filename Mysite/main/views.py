@@ -16,7 +16,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email
 
-#check_emails()
+check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -180,6 +180,11 @@ class Tickets(TemplateView):
             ticket = tickets.get(id=id)
             send_erasing_email(ticket.title, ticket.text, request.POST.get('because'), request.user.username, ticket.author.email)
             ticket.delete()
+        if request.POST.get('file-button-name') is not None:
+            id = int(request.POST.get('file-button-name'))
+            ticket = tickets.get(id=id)
+            filepath = str(ticket.file)
+            return FileResponse(open(filepath, 'rb'))
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
@@ -187,7 +192,7 @@ class Tickets(TemplateView):
         ticket = TicketModel.objects.get(pk=id)
         answers = AnswerModel.objects.all().filter(ticket=ticket)
         form = AnswerModelForm(request.POST)
-        if request.method == 'POST':    
+        if request.method == 'POST':
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty answer!')
