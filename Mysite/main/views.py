@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission
 from django.contrib.auth.decorators import login_required, permission_required
+from pyparsing import empty
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
@@ -107,14 +108,14 @@ class Tickets(TemplateView):
     def set_ticket(request):
         form = TicketModelForm(request.POST, request.FILES)
         if request.method == 'POST':
-            print(request.FILES['file-name'])
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty ticket!')
                 else:
                     curr = form.save(commit=False)
                     curr.author = request.user
-                    curr.file = request.FILES['file-name']
+                    if request.FILES.get('file-name') is not None:
+                        curr.file = request.FILES.get('file-name')
                     curr.save()
                     return HttpResponseRedirect('/tickets')
         return render(request, 'send_ticket.html', {'form':form})
