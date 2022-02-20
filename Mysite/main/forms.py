@@ -1,5 +1,6 @@
+from dataclasses import Field
 from django import forms
-from django.forms import TextInput, Textarea
+from django.forms import FileField, TextInput, Textarea
 from .models import AnswerModel, TicketModel
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -29,6 +30,7 @@ class TicketModelForm(forms.ModelForm):
         self.fields['text'].required = False
         self.fields['priority'].required = False
         self.fields['type'].required = False
+        #self.fields['file'].required = False
     
     class Meta:
         model = TicketModel
@@ -39,7 +41,7 @@ class TicketModelForm(forms.ModelForm):
             ),
             'text': Textarea(
                     {'placeholder':('What do you want to know?')}
-                )
+            )
         }
 
 class AnswerModelForm(forms.ModelForm):
