@@ -11,7 +11,12 @@
     <form method="post">
         {% csrf_token %}
         <div class="container d-flex justify-content-center mt-5">
-            <div class="card mt-4 mb-3" style="width:55rem;" id="card-{{ticket.id}}">
+            <!--border-danger-->
+            {% if ticket.priority == '1' %}
+            <div class="card mt-4 mb-3 border-danger" style="width:55rem;" id="card-{{ticket.id}}" >
+            {% else %}
+            <div class="card mt-4 mb-3" style="width:55rem;" id="card-{{ticket.id}}" >
+            {% endif %}
                 <div class="card-header">
                     <div class="row">
                         <div class="col">
@@ -186,9 +191,12 @@
         }
         
         $(document).ready(function() {
+            /*
+            console.log('pesho');
             if('{{ticket.priority}}' == '1') {
                 $('#card-{{ticket.id}}').addClass('border-danger');
             }
+            */
             if('{{ticket.ticket_comments}}' == 0) {
                 $('#comments-view-{{ticket.id}}').attr('disabled', true);
             }
