@@ -1,6 +1,5 @@
-from dataclasses import Field
 from django import forms
-from django.forms import FileField, TextInput, Textarea
+from django.forms import TextInput, Textarea
 from .models import AnswerModel, TicketModel
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
