@@ -8,34 +8,55 @@
 <div class="container">
     {% if user.is_authenticated %}
         <div class="card mt-5" style="width: 70rem;">
-            <div class="card-body">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ticket in tickets %}
-                            <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
-                                <th>{{ticket.title}}</th>
-                                <td>{{ticket.get_type_display}}</td>
-                                <td>{{ticket.author}}</td>
-                                <td>{{ticket.get_status_display}}</td>
-                                <td>{{ticket.date}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" id="dashboard-title">Title</th>
+                        <th scope="col" id="dashboard-type">Type</th>
+                        <th scope="col" id="dashboard-author">Author</th>
+                        <th scope="col" id="dashboard-status">Status</th>
+                        <th scope="col" id="dashboard-date">Date</th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="card-body" style="height: 400px; overflow:auto;">
+                    <table class="table table-hover mb-0 ">
+                        <tbody >
+                            {% for ticket in tickets %}
+                                <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
+                                    <th>{{ticket.title}}</th>
+                                    <td>{{ticket.get_type_display}}</td>
+                                    <td>{{ticket.author}}</td>
+                                    <td>{{ticket.get_status_display}}</td>
+                                    <td>{{ticket.date}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
             </div>
         </div>
     {% else %}
         <h3>There aren't users</h3>
     {% endif %}
     <script src="static/main.js"></script>
+    <style>
+        #dashboard-type {
+            position: relative; 
+            left: 45px;
+        }
+
+        #dashboard-title {
+            position: relative; 
+            left: 15px;
+        }
+        #dashboard-status {
+            position: relative;
+            right: 80px;
+        }
+        #dashboard-date {
+            position: relative;
+            right: 215px;
+        }
+    </style>
 </div>
 {% endblock content %}
