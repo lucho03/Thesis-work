@@ -16,7 +16,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email
 
-check_emails()
+#check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -81,7 +81,6 @@ class View(TemplateView):
             tickets = TicketModel.objects.all()
         if tickets is not None:
             info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
-            tickets = TicketModel.objects.all()
             return render(request, 'dashboard.html', {'info':info, 'tickets':tickets})
         return render(request, 'dashboard.html')
 
