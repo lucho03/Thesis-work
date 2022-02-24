@@ -13,3 +13,13 @@ footer {
 .navbar-nav a:hover {
     color:darkblue;
 }
+
+.th#dashboard-type {
+    position: relative; 
+    left: 45px;
+}
+
+#title{
+    position: relative; 
+    left: 45px;
+}
