@@ -1,4 +1,3 @@
-import os
 from django.http import FileResponse
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
@@ -72,7 +71,7 @@ class View(TemplateView):
         form = AuthenticationForm()
         kind = 3
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
-    
+
     def dashboard(request):
         tickets = None
         if request.user.has_perm('main.create_tickets'):
