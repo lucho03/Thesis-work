@@ -35,10 +35,35 @@
                     </table>
             </div>
         </div>
+        <div id="response"></div>
     {% else %}
         <h3>There aren't users</h3>
     {% endif %}
-    <script src="static/main.js"></script>
+    <script>
+        function click_row(id_row, id_ticket, permission) {
+            if(permission === 'True') {
+                url = window.location.href.replace('dashboard', 'list_tickets#card-'+id_ticket);
+            }
+            else {
+                url = window.location.href.replace('dashboard', 'tickets#card-'+id_ticket);
+            }
+            $(location).prop('href', url);
+        };
+        /*
+        $(document).ready( function() {
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'api_tickets' %}",
+                success: function(data){
+                    alert("Ops");
+                    var instance = JSON.parse(response["data"]);
+                    var fields = instance[0]["fields"];
+                    console.log(instance);
+                }
+            });
+        });
+        */
+    </script>
     <style>
         #dashboard-type {
             position: relative; 
