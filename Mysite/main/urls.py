@@ -1,7 +1,4 @@
-from django.contrib import admin
-from django.contrib.auth import logout
 from django.urls import path
-
 from main.views import Tickets, View
 
 urlpatterns = [
