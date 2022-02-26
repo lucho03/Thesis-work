@@ -6,19 +6,41 @@
 
 {% block content %}
 {% load crispy_forms_tags %}
-<div class="container mb-4">
+<div class="container mb-4 d-flex justify-content-center">
     <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="custom-file mb-3">
-            <input type="file" class="custom-file-input" id="file-id" name="file-name">
-            <label class="custom-file-label" for="file" id="file-label-id">Your file</label>
+        <div class="card mt-4" style="width: 60rem;">
+            <div class="card-body">
+                {% csrf_token %}
+                <!--
+                {{ form|crispy }}
+                -->
+                <div class="mb-4">
+                    {{ form.title }}
+                </div>
+                <div class="mb-4">
+                    {{ form.text }}
+                </div>
+                <div class="row mb-4">
+                    <div class="w-50 pl-3 pr-1">
+                        {{ form.priority }}
+                    </div>
+                    <div class="w-50 pr-3 pl-1">
+                        {{ form.type }}
+                    </div>
+                </div>
+                <div class="row mb-3 d-flex justify-content-center">
+                    <div class="custom-file w-50 p-3">
+                        <input type="file" class="custom-file-input" id="file-id" name="file-name">
+                        <label class="custom-file-label" for="file" id="file-label-id">Your file</label>
+                    </div>
+                </div>
+                {% if ticket is not None %}
+                    <button type="submit" class="btn btn-success">Change</button>
+                {% else %}
+                    <button type="submit" class="btn btn-success">Send ticket</button>
+                {% endif %}
+            </div>
         </div>
-        {% if ticket is not None %}
-            <button type="submit" class="btn btn-success">Change</button>
-        {% else %}
-            <button type="submit" class="btn btn-success">Send ticket</button>
-        {% endif %}
     </form>
 </div>
 <script src="static/main.js"></script>
