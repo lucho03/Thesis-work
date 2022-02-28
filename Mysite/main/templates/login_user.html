@@ -1,20 +1,19 @@
 {% extends "layout.html" %}
 
 {% block title %}
-{% if kind == 1 %}
-    <title>Register as agent</title>
-{% elif kind == 2%}
-    <title>Register</title>
-{% else %}
-    <title>Log In</title>
-{% endif %}
+    {% if kind == 1 %}
+        <title>Register as agent</title>
+    {% elif kind == 2%}
+        <title>Register</title>
+    {% else %}
+        <title>Log In</title>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 {% load crispy_forms_tags %}
-<div class="container mb-3">
+<div class="container mb-3 d-flex justify-content-center">
     <form method="post">
-        {% csrf_token %}
         {% if messages %}
             {% for message in messages%}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -25,11 +24,25 @@
             </div>
             {% endfor %}
         {% endif %}
-        {{ form|crispy }}
+
         {% if kind == 3%}
-            <button type="submit" class="btn btn-success">Log in</button>
+            <div class="card mt-5 text-center"  style="width:30rem; height: 28rem;">
+                <div class="mt-4">
+                    <img src="static/images/person2.png" class="rounded mx-auto d-block" style="width: 10rem; height: 10rem;">
+                </div>
+                <div class="card-body mt-2">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success">Log in</button>
+                </div>
+            </div>
         {% else %}
-            <button type="submit" class="btn btn-success">Sign Up</button>
+            <div class="card mt-5" style="width: 45rem;">
+                <div class="card-body">
+                    {{form|crispy}}
+                    <button type="submit" class="btn btn-success">Sign Up</button>
+                </div>
+            </div>
         {% endif %}
     </form>
 </div>
