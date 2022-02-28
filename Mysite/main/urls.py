@@ -15,5 +15,6 @@ urlpatterns = [
     path('logout_user', View.logout_user),
     path('log_in', View.log_in),
     path('list_tickets', Tickets.list_tickets),
-    path('answer/<id>', Tickets.answer, name='answer')
+    path('answer/<id>', Tickets.answer, name='answer'),
+    path('knowledge_base', Tickets.knowledge_base)
 ]
