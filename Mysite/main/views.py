@@ -1,3 +1,4 @@
+import re
 from django.http import FileResponse
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
@@ -67,7 +68,6 @@ class View(TemplateView):
                     return HttpResponseRedirect('/dashboard')
                 else:
                     messages.error(request, 'Wrong username or password!')
-        
         form = AuthenticationForm()
         kind = 3
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
@@ -188,9 +188,24 @@ class Tickets(TemplateView):
     @permission_required('main.answer_tickets', raise_exception=True)
     def answer(request, id):
         ticket = TicketModel.objects.get(pk=id)
-        answers = AnswerModel.objects.all().filter(ticket=ticket)
+        answers = AnswerModel.objects.all().filter(ticket=ticket).order_by('number')
         form = AnswerModelForm(request.POST)
+        comments = CommentAnswerModel.objects.all().order_by('answer')
         if request.method == 'POST':
+            if request.POST.get('comment') is not None:
+                id = int(request.POST.get('comment'))
+                answer = answers.get(pk=id)
+                answer.answer_comments += 1
+                comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more-info'), number=answer.answer_comments)
+                answer.save()
+                comment.save()
+                return HttpResponseRedirect('/answer/{}'.format(ticket.id))
+            if request.POST.get('close_ticket') is not None:
+                id = int(request.POST.get('close_ticket'))
+                ticket = TicketModel.objects.get(pk=id)
+                ticket.status = 'C'
+                ticket.save()
+                return HttpResponseRedirect('/list_tickets')
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty answer!')
@@ -205,6 +220,9 @@ class Tickets(TemplateView):
                     if request.POST.get('send_to_mail') == 'yes':
                         send_answering_email(ticket.title, ticket.text, curr.text, request.user.username, ticket.author.email)
                     return HttpResponseRedirect('/list_tickets')
-            if request.POST.get('comment') is not None:
-                print(request.POST.get('more-info'))
-        return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers})
+        return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers, 'comments':comments})
+    
+    @permission_required('main.answer_tickets', raise_exception=True)
+    def knowledge_base(request):
+        tickets = TicketModel.objects.all().filter(status='C')
+        return render(request, 'knowledge_base.html', {'tickets':tickets})
