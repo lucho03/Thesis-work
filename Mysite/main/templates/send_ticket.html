@@ -11,21 +11,18 @@
         <div class="card mt-4" style="width: 60rem;">
             <div class="card-body">
                 {% csrf_token %}
-                <!--
-                {{ form|crispy }}
-                -->
                 <div class="mb-4">
-                    {{ form.title }}
+                    {{ form.title|as_crispy_field }}
                 </div>
                 <div class="mb-4">
-                    {{ form.text }}
+                    {{ form.text|as_crispy_field }}
                 </div>
                 <div class="row mb-4">
                     <div class="w-50 pl-3 pr-1">
-                        {{ form.priority }}
+                        {{ form.priority|as_crispy_field }}
                     </div>
                     <div class="w-50 pr-3 pl-1">
-                        {{ form.type }}
+                        {{ form.type|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row mb-3 d-flex justify-content-center">
