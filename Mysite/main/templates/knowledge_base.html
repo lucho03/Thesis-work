@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    <title>Tickets</title>
+{% endblock %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+{% for ticket in tickets %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="card mt-4 mb-3" style="width:55rem;" id="card-{{ticket.id}}" >
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <p class="lead">{{ticket.author}}</p><br>
+                </div>
+                <div class="col">
+                    <p>{{ticket.author.email}}</p><br>
+                </div>
+                <div class="col">
+                    <p>{{ticket.date}}</p><br>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-center">{{ticket.title}}</h5>
+            <div class="border">
+                <p class="card-text m-3">{{ticket.text}}</p>
+            </div>
+            {% if perms.main.answer_tickets %}
+                {% if ticket.priority == '1' %}
+                    <button class="btn btn-danger mt-2 btn-block" type="button" data-toggle="modal" data-target="#meet-{{ticket.id}}">Create Google Meet</button>
+                {% endif %}
+                <button class="btn btn-info mt-2 btn-block" disabled>
+                    Answers
+                    <span class="badge badge-light">
+                        {{ticket.num_answers}}
+                    </span>
+                </button>
+            {% else %}
+                <button class="btn btn-primary mt-2 btn-block" role="button" value="{{ticket.id}}" name="answers" id="answers-view-{{ticket.id}}">
+                    Answers
+                    <span class="badge badge-light">
+                        {{ticket.num_answers}}
+                    </span>
+                </button>
+            {% endif %}
+            <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#collapse-{{ticket.id}}" aria-expanded="false" aria-controls="collapse-{{ticket.id}}" id="comments-view-{{ticket.id}}">
+                Comments
+                <span class="badge badge-light">
+                    {{ticket.ticket_comments}}
+                </span>
+            </button>
+            <button class="btn btn-primary btn-block" id="file-button-{{ticket.id}}" name="file-button-name" value="{{ticket.id}}">
+                Files
+                {% if ticket.file == "" %}
+                    <span class="badge badge-light">
+                        NO
+                    </span>
+                {% else %}
+                    <span class="badge badge-light">
+                        {{ticket.filename}}
+                    </span>
+                {% endif %}
+            </button>
+            
+            <p>Priority: {{ticket.get_priority_display}}</p>
+            <p>Type: {{ticket.get_type_display}}</p>
+            
+            <p>Status: {{ticket.get_status_display}}</p>
+            <div class="collapse mb-2" id="collapse-{{ticket.id}}">
+                <div class="card card-body">
+                    <table class="table">
+                        <tbody>
+                            {% for comment in comments %}
+                                <tr>
+                                    <th>{{comment.number}}</th>
+                                    <td>{{comment.text}}</th>
+                                </tr>
+                            {% endfor %}
+                            <!--
+                            {% for x in more %}
+                                {% for y in x %}
+                                    <div id="op-{{ticket}}">
+                                    
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
