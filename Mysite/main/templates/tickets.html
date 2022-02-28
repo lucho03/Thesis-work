@@ -81,20 +81,13 @@
                             <table class="table">
                                 <tbody>
                                     {% for comment in comments %}
-                                        <tr>
-                                            <th>{{comment.number}}</th>
-                                            <td>{{comment.text}}</th>
-                                        </tr>
+                                        {% if comment.ticket.id == ticket.id %}
+                                            <tr>
+                                                <th>{{comment.number}}</th>
+                                                <td>{{comment.text}}</th>
+                                            </tr>
+                                        {% endif %}
                                     {% endfor %}
-                                    <!--
-                                    {% for x in more %}
-                                        {% for y in x %}
-                                            <div id="op-{{ticket}}">
-                                            
-                                            </div>
-                                        {% endfor %}
-                                    {% endfor %}
-                                    -->
                                 </tbody>
                             </table>
                         </div>
