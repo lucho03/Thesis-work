@@ -17,6 +17,15 @@ def check_emails():
     t = Thread(target=emails.listen, args=[timeout, create_ticket])
     t.start()
 
+def send_meeting_email(title, meet, reciever):
+    send_mail(
+        'Video call about \' ' + reduction(title) + '\' ',
+        'Our agent want to meet you \nPlease follow this link ' + meet,
+        settings.EMAIL_HOST_USER,
+        [reciever],
+        fail_silently=False
+    )
+
 def send_erasing_email(title, text, reason, agent, receiver):
     send_mail(
         'Your ticket \'' + reduction(title) + '\' was deleted!',
