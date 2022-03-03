@@ -8,13 +8,12 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, User
 from django.contrib.auth.decorators import login_required, permission_required
-from pyparsing import empty
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
-from .emails import check_emails, send_erasing_email, send_answering_email
+from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
 
 #check_emails()
 
@@ -183,6 +182,10 @@ class Tickets(TemplateView):
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
             return FileResponse(open(filepath, 'rb'))
+        if request.POST.get('meeting') is not None:
+            id = int(request.POST.get('meeting'))
+            ticket = tickets.get(id=id)
+            send_meeting_email(ticket.title, request.POST.get('meet'), ticket.author.email)
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
