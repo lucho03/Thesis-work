@@ -1,11 +1,11 @@
 body {
     background-color: rgb(243, 243, 243);
 }
-
+/*
 footer {
     position: relative;
 }
-
+*/
 .navbar-nav a {
     color: cadetblue;
 }
@@ -19,7 +19,22 @@ footer {
     left: 45px;
 }
 
-#title{
+#title {
     position: relative; 
     left: 45px;
+}
+
+#about_project_container {
+    height: 25rem;
+}
+
+#info_container {
+    position:relative;
+    top: 7rem;
+    margin-left: 5rem;
+}
+
+#card-about {
+    height: 18rem;
+    top: 5rem;
 }
