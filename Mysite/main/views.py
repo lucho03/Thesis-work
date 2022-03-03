@@ -1,4 +1,4 @@
-import re
+from django.core.paginator import Paginator
 from django.http import FileResponse
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
@@ -75,9 +75,9 @@ class View(TemplateView):
     def dashboard(request):
         tickets = None
         if request.user.has_perm('main.create_tickets'):
-            tickets = TicketModel.objects.all().filter(author=request.user)
+            tickets = TicketModel.objects.all().filter(author=request.user).exclude(status='C')
         if request.user.has_perm('main.answer_tickets'):
-            tickets = TicketModel.objects.all()
+            tickets = TicketModel.objects.all().exclude(status='C')
         if tickets is not None:
             info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
             return render(request, 'dashboard.html', {'info':info, 'tickets':tickets})
@@ -168,7 +168,7 @@ class Tickets(TemplateView):
     
     @permission_required('main.answer_tickets', raise_exception=True)
     def list_tickets(request):
-        tickets = TicketModel.objects.all().order_by('priority')
+        tickets = TicketModel.objects.all().exclude(status='C').order_by('priority')
         comments = CommentTicketModel.objects.all()
         if request.POST.get('answer') is not None:
             id = int(request.POST.get('answer'))
@@ -225,4 +225,8 @@ class Tickets(TemplateView):
     @permission_required('main.answer_tickets', raise_exception=True)
     def knowledge_base(request):
         tickets = TicketModel.objects.all().filter(status='C')
-        return render(request, 'knowledge_base.html', {'tickets':tickets})
+        comments = CommentTicketModel.objects.all()
+        paginator = Paginator(tickets, 3)
+        page_number = request.GET.get('page')
+        object = paginator.get_page(page_number)
+        return render(request, 'knowledge_base.html', {'tickets':object, 'comments':comments})
