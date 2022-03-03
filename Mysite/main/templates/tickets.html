@@ -34,41 +34,47 @@
                     <div class="border">
                         <p class="card-text m-3">{{ticket.text}}</p>
                     </div>
-                    {% if perms.main.answer_tickets %}
-                        {% if ticket.priority == '1' %}
+                    {% if ticket.priority == '1' %}
+                        {% if perms.main.answer_tickets %}
                             <button class="btn btn-danger mt-2 btn-block" type="button" data-toggle="modal" data-target="#meet-{{ticket.id}}">Create Google Meet</button>
                         {% endif %}
-                        <button class="btn btn-info mt-2 btn-block" disabled>
-                            Answers
-                            <span class="badge badge-light">
-                                {{ticket.num_answers}}
-                            </span>
-                        </button>
-                    {% else %}
-                        <button class="btn btn-primary mt-2 btn-block" role="button" value="{{ticket.id}}" name="answers" id="answers-view-{{ticket.id}}">
-                            Answers
-                            <span class="badge badge-light">
-                                {{ticket.num_answers}}
-                            </span>
-                        </button>
                     {% endif %}
+                    
+                    {% if ticket.num_answers == 0 %}
+                    <button class="btn btn-info mt-2 btn-block" disabled>
+                    {% else %}
+                    <button class="btn btn-primary mt-2 btn-block" role="button" value="{{ticket.id}}" name="answers" id="answers-view-{{ticket.id}}">
+                    {% endif %}
+                        Answers
+                        <span class="badge badge-light">
+                            {{ticket.num_answers}}
+                        </span>
+                    </button>
+                    
+                    {% if ticket.ticket_comments == 0%}
+                    <button class="btn btn-primary btn-block" disabled>
+                    {% else %}
                     <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#collapse-{{ticket.id}}" aria-expanded="false" aria-controls="collapse-{{ticket.id}}" id="comments-view-{{ticket.id}}">
+                    {% endif %}
                         Comments
                         <span class="badge badge-light">
                             {{ticket.ticket_comments}}
                         </span>
                     </button>
+                    
+                    {% if ticket.file == "" %}
+                    <button class="btn btn-primary btn-block" disabled>
+                        File
+                        <span class="badge badge-light">
+                            NO
+                        </span>
+                    {% else %}
                     <button class="btn btn-primary btn-block" id="file-button-{{ticket.id}}" name="file-button-name" value="{{ticket.id}}">
-                        Files
-                        {% if ticket.file == "" %}
-                            <span class="badge badge-light">
-                                NO
-                            </span>
-                        {% else %}
-                            <span class="badge badge-light">
-                                {{ticket.filename}}
-                            </span>
-                        {% endif %}
+                        File
+                        <span class="badge badge-light">
+                            {{ticket.filename}}
+                        </span>
+                    {% endif %}
                     </button>
                     
                     <p>Priority: {{ticket.get_priority_display}}</p>
@@ -159,49 +165,19 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p></p><a href="https://meet.google.com/landing?authuser=2" target="_blank">Create a new meet</a> and send it to user</p>
-                            <input type="text" class="form-control" id="input-meet-{{ticket.id}}" name="meet" onkeyup="enable(id, '#meeting-{{ticket.id}}')">
+                            <p><a href="https://meet.google.com/xbu-bemk-zwm" target="_blank">Join in existing meet</a> and send it to user</p>
+                            <input type="text" class="form-control" id="input-meet-{{ticket.id}}" name="meet" value="https://meet.google.com/xbu-bemk-zwm" onkeyup="enable(id, '#meeting-{{ticket.id}}')">
                             <small class="font-weight-bold d-flex justify-content-center">Send mail for a google meet </small>
                         </div>
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button class="btn btn-danger" type="submit" value="{{ticket.id}}" name="meeting" id="meeting-{{ticket.id}}" disabled>Delete</button>
+                            <button class="btn btn-danger" type="submit" value="{{ticket.id}}" name="meeting" id="meeting-{{ticket.id}}">Send</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-    <script>
-        function enable(input_id, button_id) {
-            if($('#'+input_id).val().length > 0) {
-                $(button_id).attr('disabled', false);
-            }
-            else {
-                $(button_id).attr('disabled', true);
-            }
-        }
-        
-        $(document).ready(function() {
-            /*
-            console.log('pesho');
-            if('{{ticket.priority}}' == '1') {
-                $('#card-{{ticket.id}}').addClass('border-danger');
-            }
-            */
-            if('{{ticket.ticket_comments}}' == 0) {
-                $('#comments-view-{{ticket.id}}').attr('disabled', true);
-            }
-            if('{{ticket.num_answers}}' == 0) {
-                $('#answers-view-{{ticket.id}}').attr('disabled', true);
-            }
-            if('{{ticket.file}}'.length === 0) {
-                $('#file-button-{{ticket.id}}').attr('disabled', true);
-                $('.badge badge-light').append('<p>OPa</p>');
-            }
-        });
-        
-    </script>
 {% endfor %}
 
 {% endblock content %}
