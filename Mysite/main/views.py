@@ -31,6 +31,7 @@ class View(TemplateView):
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
             else:
+                print(form.is_valid())
                 messages.error(request, 'Invalid password!')
         form = AgentForm()
         kind = 1
@@ -186,6 +187,7 @@ class Tickets(TemplateView):
             id = int(request.POST.get('meeting'))
             ticket = tickets.get(id=id)
             send_meeting_email(ticket.title, request.POST.get('meet'), ticket.author.email)
+        
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
