@@ -29,7 +29,10 @@
             {% for answer in answers %}
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <p>{{answer.number}}.  {{answer.text}}</p>
+                        <blockquote class="blockquote">
+                            <p class="mb-0">{{answer.number}}.  {{answer.text}}</p>
+                            <footer class="blockquote-footer">Replied by {{user}}</footer>
+                        </blockquote>
                         <div class="collapse mb-2" id="collapse-{{answer.id}}">
                             <div class="card card-body">
                                 <table class="table">
