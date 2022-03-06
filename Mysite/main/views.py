@@ -229,7 +229,7 @@ class Tickets(TemplateView):
     
     @permission_required('main.answer_tickets', raise_exception=True)
     def knowledge_base(request):
-        tickets = TicketModel.objects.all().filter(status='C')
+        tickets = TicketModel.objects.all().filter(status='C').order_by('priority')
         comments = CommentTicketModel.objects.all()
         paginator = Paginator(tickets, 3)
         page_number = request.GET.get('page')
