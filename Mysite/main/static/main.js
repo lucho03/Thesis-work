@@ -21,3 +21,14 @@ function click_row(id_row, id_ticket, permission) {
     }
     $(location).prop('href', url);
 };
+
+$(document).ready ( function() {
+    $(".nav-item").hover( 
+        function() {
+            $(this).addClass("fa-bounce");
+        },
+        function() {
+            $(this).removeClass("fa-bounce");
+        }
+    );
+});
