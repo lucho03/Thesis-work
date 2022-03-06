@@ -1,17 +1,17 @@
 body {
     background-color: rgb(243, 243, 243);
 }
-/*
-footer {
-    position: relative;
-}
-*/
-.navbar-nav a {
+
+.navbar a {
     color: cadetblue;
 }
 
-.navbar-nav a:hover {
+.navbar a:hover {
     color:darkblue;
+}
+
+div .name {
+    font-size: small;
 }
 
 .th#dashboard-type {
