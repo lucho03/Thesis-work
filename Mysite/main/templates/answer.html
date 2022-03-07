@@ -8,7 +8,7 @@
 {% load crispy_forms_tags %}
 <form method="post">
     {% csrf_token %}
-    <div class="container">
+    <div class="container mb-3">
         {% if messages %}
             {% for message in messages%}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -31,7 +31,7 @@
                     <li class="list-group-item">
                         <blockquote class="blockquote">
                             <p class="mb-0">{{answer.number}}.  {{answer.text}}</p>
-                            <footer class="blockquote-footer">Replied by {{user}}</footer>
+                            <footer class="blockquote-footer">Replied by {{answer.author}}</footer>
                         </blockquote>
                         <div class="collapse mb-2" id="collapse-{{answer.id}}">
                             <div class="card card-body">
@@ -60,11 +60,19 @@
                                     {{answer.answer_comments}}
                                 </span>
                             </button>
+                            
                             {% if ticket.status == 'C' %}
-                                <button class="btn btn-info ml-1" disabled>Add a comment</button>
-                            {% else %}
+                            <button class="btn btn-info ml-1" disabled>Add a comment</button>
+                            {% elif answer.lock == True %}
+                                {% if answer.author != user %}
+                                    <button class="btn btn-info ml-1" disabled data-target="tooltip" title="This answer is locked">Add a comment</button>
+                                {% else %}
                                 <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#comment-{{answer.id}}">Add a comment</button>
+                                {% endif %}
+                            {% else %}
+                            <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#comment-{{answer.id}}">Add a comment</button>
                             {% endif %}
+                        
                         </div>
                     </li>
                 </ul>
@@ -89,12 +97,28 @@
                 </div>
             {% endfor %}
         </div>
-
+        
         {% if perms.main.answer_tickets %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-success">Answer</button>
-            <button type="submit" class="btn btn-warning" value="yes" name="send_to_mail">Answer and send to mail</button>
-            <button type="submit" class="btn btn-danger" value="{{ticket.id}}" name="close_ticket">Close Ticket</button>
+        <div class="card mb-2">
+            <div class="card-body">
+                {{ form|crispy }}
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="lock" value="True" name="lock-button">
+                    <lable class="form-check-label" for="lock">Lock this answer</lable>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn btn-success">Answer</button>
+                    </div>
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-warning" value="yes" name="send_to_mail">Answer and send to mail</button>
+                    </div>
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-danger" value="{{ticket.id}}" name="close_ticket">Close Ticket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endif %}
     </div>
 </form>
