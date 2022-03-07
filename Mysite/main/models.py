@@ -46,10 +46,12 @@ class TicketModel(models.Model):
         )
 
 class AnswerModel(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
     text = models.TextField()
     answer_comments = models.IntegerField(default=0)
     number = models.IntegerField(default=0)
+    lock = models.BooleanField(default=False)
 
 class CommentTicketModel(models.Model):
     ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
