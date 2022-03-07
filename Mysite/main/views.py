@@ -216,10 +216,13 @@ class Tickets(TemplateView):
                     messages.error(request, 'Empty answer!')
                 else:
                     curr = form.save(commit=False)
+                    curr.author = request.user
                     curr.ticket = ticket
                     ticket.num_answers += 1
                     ticket.status = 'O'
                     curr.number = ticket.num_answers
+                    if request.POST.get('lock-button') is not None:
+                        curr.lock = True
                     curr.save()
                     ticket.save()
                     if request.POST.get('send_to_mail') == 'yes':
