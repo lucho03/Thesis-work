@@ -33,6 +33,6 @@ def data(request):
         'tickets':serializer_tickets.data, 
         'answers':serializer_answers.data,
         'comments_answer':serializer_comments_1.data,
-        'comments_ticket':serializer_comments_1.data
+        'comments_ticket':serializer_comments_2.data
         }, 
         status=200)
