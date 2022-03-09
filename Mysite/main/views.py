@@ -155,13 +155,13 @@ class Tickets(TemplateView):
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def view_answers(request, id):
         ticket = TicketModel.objects.get(pk=id)
-        answers = AnswerModel.objects.all().filter(ticket=ticket)
+        answers = AnswerModel.objects.all().filter(ticket=ticket).order_by('number')
         comments = CommentAnswerModel.objects.all()
         if request.POST.get('comment') is not None:
             id = int(request.POST.get('comment'))
             answer = answers.get(id=id)
             answer.answer_comments += 1
-            comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more-info'), number=answer.answer_comments)
+            comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more'), number=answer.answer_comments)
             comment.save()
             answer.save()
         return render(request, 'answer.html', {'ticket':ticket, 'answers':answers, 'comments':comments})
@@ -195,13 +195,13 @@ class Tickets(TemplateView):
         ticket = TicketModel.objects.get(pk=id)
         answers = AnswerModel.objects.all().filter(ticket=ticket).order_by('number')
         form = AnswerModelForm(request.POST)
-        comments = CommentAnswerModel.objects.all().order_by('answer')
+        comments = CommentAnswerModel.objects.all()
         if request.method == 'POST':
             if request.POST.get('comment') is not None:
                 id = int(request.POST.get('comment'))
-                answer = answers.get(pk=id)
+                answer = answers.get(id=id)
                 answer.answer_comments += 1
-                comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more-info'), number=answer.answer_comments)
+                comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more'), number=answer.answer_comments)
                 answer.save()
                 comment.save()
                 return HttpResponseRedirect('/answer/{}'.format(ticket.id))
