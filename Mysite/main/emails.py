@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from emailpy import EmailManager
 
 dir = "Inbox"
-attachment_dir = "./main/static/emails_folder"
+attachment_dir = "./media"
 emails = EmailListener(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD, dir, attachment_dir)
 emails.login()
 
@@ -56,7 +56,7 @@ def create_ticket(email_listener, messages):
         else:
             ticket.title = title
             ticket.text = text
-            ticket.file = messages[key].get('attachments')[0].replace('./', '')
+            ticket.file = messages[key].get('attachments')[0].replace('./media/', '')
             if 'problem' or 'Problem' in text:
                 ticket.type = 'P'
                 ticket.priority = '2'
