@@ -82,9 +82,6 @@ class View(TemplateView):
             info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
             return render(request, 'dashboard.html', {'info':info, 'tickets':tickets})
         return render(request, 'dashboard.html')
-
-    def about_us(request):
-        return render(request, 'about_us.html')
     
     def profile(request):
         if request.method == 'POST':
@@ -140,7 +137,7 @@ class Tickets(TemplateView):
             id = int(request.POST.get('file-button-name'))
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
-            return FileResponse(open(filepath, 'rb'))
+            return FileResponse(open('media/' + filepath, 'rb'))
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments, 'more':more})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
@@ -182,7 +179,7 @@ class Tickets(TemplateView):
             id = int(request.POST.get('file-button-name'))
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
-            return FileResponse(open(filepath, 'rb'))
+            return FileResponse(open('media/' + filepath, 'rb'))
         if request.POST.get('meeting') is not None:
             id = int(request.POST.get('meeting'))
             ticket = tickets.get(id=id)
