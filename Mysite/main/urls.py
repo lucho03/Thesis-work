@@ -5,7 +5,6 @@ urlpatterns = [
     path('', View.main_page),
     path('dashboard', View.dashboard),
     path('profile', View.profile),
-    path('about us', View.about_us),
     path('tickets', Tickets.get_tickets),
     path('send_ticket', Tickets.set_ticket),
     path('rewrite/<id>', Tickets.rewrite, name='rewrite'),
