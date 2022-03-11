@@ -1,6 +1,8 @@
+import email
 import os
 from django.contrib.auth.models import User
 from django.db import models
+from pyparsing import empty
 
 class TicketModel(models.Model):
     PRIORITIES = (
@@ -33,10 +35,17 @@ class TicketModel(models.Model):
     type = models.CharField(max_length=1, choices=TYPES, default='Q')
     status = models.CharField(max_length=1, choices=STATUSES, default='N')
     num_answers = models.IntegerField(default=0)
-    file = models.FileField(upload_to='main/static/capture_files_folder', null=True)
+    file = models.FileField(null=True)
 
     def filename(self):
         return os.path.basename(self.file.name)
+    
+    def delete(self, using=None, keep_parents=False):
+        storage = self.file.storage
+        if len(self.file.name) > 0:
+            if storage.exists(self.file.name):
+                storage.delete(self.file.name)
+        super().delete()
 
     class Meta:
         permissions = (
@@ -62,3 +71,6 @@ class CommentAnswerModel(models.Model):
     answer = models.ForeignKey(AnswerModel, on_delete=models.CASCADE)
     text = models.TextField(default='T')
     number = models.IntegerField(default=0)
+
+class RegisterAgent(models.Model):
+    email = models.EmailField(default='example@gmail.com')
