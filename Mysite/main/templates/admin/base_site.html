@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+
+{% block nav-global %}
+<div>
+    <input class="vTextField" id="input" placeholder="Send invitation email to new agents">
+    <button class="button" type="submit" id="op" onclick="btnFun();">proba</button>
+    <p id="id">op </p>
+    <script>
+        function btnFun() {
+            var element = document.getElementById('id');
+            var element2 = document.getElementById('input');
+            element.append(element2.value);
+        }
+    </script>
+</div>
+{% endblock %}
+
+
+{% block content %}
+    {% block object-tools %}
+    <div>
+        <h1>Proba</h1>
+    </div>
+    {% endblock %}
+{% endblock %}
+
+{% block sidebar %}
+    {{ block.super }}
+    <div>
+        <h1>Pr</h1>
+    </div>
+{% endblock %}
