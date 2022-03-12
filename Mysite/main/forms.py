@@ -29,7 +29,6 @@ class TicketModelForm(forms.ModelForm):
         self.fields['text'].required = False
         self.fields['priority'].required = False
         self.fields['type'].required = False
-        #self.fields['file'].required = False
     
     class Meta:
         model = TicketModel
@@ -46,11 +45,14 @@ class TicketModelForm(forms.ModelForm):
 class AnswerModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AnswerModelForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = False
         self.fields['text'].required = False
-    
+
     class Meta:
         model = AnswerModel
-        fields = ['text']
+        fields = ['title', 'text']
         widgets = {
-            'text': Textarea()
+            'title': TextInput(
+                    {'placeholder': ('Title')}
+            )
         }
