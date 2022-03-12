@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+from email.policy import default
 import os
 import django_heroku
 import environ
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'rest_framework',
+    'ckeditor',
 
     'main',
 ]
@@ -145,6 +147,28 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+CKEDITOR_CONFIGS = {
+    'default' : {
+        'toolbar':'Custom',
+        'toolbar_Custom': [
+            ['Styles'],
+            ['Format'],
+            ['Bold', 'Italic', 'Underline', 'Strike'],
+            ['Link', 'Text color', 'Background', 'Smiley', 'Special insert'],
+            ['Undo', 'Redo'],
+            ['Source']
+        ],
+        'width':'1065',
+        'removePlugins':'elementspath',
+        'resize_enabled':False
+    },
+    'ticket_ckeditor':{
+        'width':'915',
+        'removePlugins':'elementspath',
+        'resize_enabled':False
+    }
+}
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
