@@ -32,7 +32,9 @@
                 <div class="card-body">
                     <h5 class="card-title text-center">{{ticket.title}}</h5>
                     <div class="border">
-                        <p class="card-text m-3">{{ticket.text}}</p>
+                        <div class="m-3">
+                            {{ticket.text|safe}}
+                        </div>
                     </div>
                     {% if perms.main.answer_tickets %}
                         {% if ticket.priority == '1' %}
