@@ -33,7 +33,10 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <blockquote class="blockquote">
-                                <p class="mb-0">{{answer.number}}.  {{answer.text}}</p>
+                                <p class="mb-3">{{ answer.number }}. {{ answer.title }}</p>
+                                <div class="ml-3">
+                                    {{ answer.text|safe }}
+                                </div>
                                 <footer class="blockquote-footer">Replied by {{answer.author}}</footer>
                             </blockquote>
                             <div class="collapse mb-2" id="collapse-{{answer.id}}">
@@ -104,7 +107,12 @@
         {% if perms.main.answer_tickets %}
         <div class="card mb-2">
             <div class="card-body">
-                {{ form|crispy }}
+                {{ form.title|as_crispy_field }}
+                <label>Text</label>
+                <div class="d-flex justify-content-center mb-2">
+                    {{ form.media }}
+                    {{ form.text }}
+                </div>
                 <div class="form-check mb-3">
                     <input type="checkbox" class="form-check-input" id="lock" value="True" name="lock-button">
                     <lable class="form-check-label" for="lock">Lock this answer</lable>
