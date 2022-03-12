@@ -1,8 +1,7 @@
-import email
 import os
 from django.contrib.auth.models import User
 from django.db import models
-from pyparsing import empty
+from ckeditor.fields import RichTextField
 
 class TicketModel(models.Model):
     PRIORITIES = (
@@ -28,7 +27,7 @@ class TicketModel(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.TextField(default='Title')
-    text = models.TextField()
+    text = RichTextField(config_name='ticket_ckeditor')
     ticket_comments = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
     priority = models.CharField(max_length=1, choices=PRIORITIES, default='3')
@@ -57,7 +56,8 @@ class TicketModel(models.Model):
 class AnswerModel(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
-    text = models.TextField()
+    title = models.TextField(default='Title')
+    text = RichTextField()
     answer_comments = models.IntegerField(default=0)
     number = models.IntegerField(default=0)
     lock = models.BooleanField(default=False)
