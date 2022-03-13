@@ -14,7 +14,7 @@ div .name {
     font-size: small;
 }
 
-.th#dashboard-type {
+.th #dashboard-type {
     position: relative; 
     left: 45px;
 }
