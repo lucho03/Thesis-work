@@ -25,7 +25,7 @@
                 <h4 class="card-title text-center">{{ticket.title}}</h4>
             </div>
             <div class="card-body">
-                <h6 class="card-text">{{ticket.text}}</h6>
+                <h6 class="card-text">{{ticket.text|safe}}</h6>
             </div>
             {% for answer in answers %}
                 <form method="post">
@@ -119,7 +119,13 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <button type="submit" class="btn btn-success">Answer</button>
+                        {% if ticket.is_from_email %}
+                        <button class="btn btn-success" disabled data-toggle="tooltip" title="This ticket is from mail!">
+                        {% else %}
+                        <button class="btn btn-success" type="submit">
+                        {% endif %}
+                            Answer
+                        </button>
                     </div>
                     <div class="col text-center">
                         <button type="submit" class="btn btn-warning" value="yes" name="send_to_mail">Answer and send to mail</button>
