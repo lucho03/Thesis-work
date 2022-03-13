@@ -10,16 +10,22 @@
 {% for ticket in tickets %}
     <form method="post">
         {% csrf_token %}
-        <div class="container d-flex justify-content-center mt-5">
+        <div class="container d-flex justify-content-center mt-5" id="container-ticket-{{ticket.id}}">
             {% if ticket.priority == '1' %}
-            <div class="card mt-4 mb-3 border-danger" style="width:55rem;" id="card-{{ticket.id}}" >
+            <div class="card border-danger" style="width:55rem; margin-top: 6%;" id="card-{{ticket.id}}">
             {% else %}
-            <div class="card mt-4 mb-3" style="width:55rem;" id="card-{{ticket.id}}" >
+            <div class="card" style="width:55rem; margin-top: 6%;" id="card-{{ticket.id}}" >
             {% endif %}
                 <div class="card-header">
                     <div class="row">
                         <div class="col">
-                            <p class="lead">{{ticket.author}}</p><br>
+                            {% if ticket.is_from_email %}
+                            <div class="m-2">
+                                <i class="fa-solid fa-envelope fa-2x" style="color: cadetblue;"></i>
+                            </div>
+                            {% else %}
+                            <p class="lead">{{ticket.author}}</p>
+                            {% endif %}
                         </div>
                         <div class="col text-center">
                             <p>{{ticket.author.email}}</p><br>
@@ -31,7 +37,7 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title text-center">{{ticket.title}}</h5>
-                    <div class="border">
+                    <div class="shadow-sm border mb-3">
                         <div class="m-3">
                             {{ticket.text|safe}}
                         </div>
