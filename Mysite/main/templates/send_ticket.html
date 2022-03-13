@@ -8,6 +8,17 @@
 {% load crispy_forms_tags %}
 <div class="container mb-4 d-flex justify-content-center">
     <form method="post" enctype="multipart/form-data">
+        {% if messages %}
+            {% for message in messages%}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="card mt-4" style="width: 60rem;">
             <div class="card-body">
                 {% csrf_token %}
@@ -41,5 +52,4 @@
         </div>
     </form>
 </div>
-<script src="static/main.js"></script>
 {% endblock content %}
