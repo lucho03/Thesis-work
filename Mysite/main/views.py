@@ -15,7 +15,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
 
-check_emails()
+#check_emails()
 
 class View(TemplateView):
     def main_page(request):
