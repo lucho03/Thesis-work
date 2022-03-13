@@ -22,7 +22,6 @@ class View(TemplateView):
         return render(request, 'main_page.html')
     
     def register_agent(request):
-        print("Proba")
         if request.method == 'POST':
             form = AgentForm(request.POST)
             if form.is_valid():
@@ -31,8 +30,7 @@ class View(TemplateView):
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
             else:
-                print(form.is_valid())
-                messages.error(request, 'Invalid password!')
+                messages.error(request, 'Invalid credentials!')
         form = AgentForm()
         kind = 1
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
@@ -47,7 +45,7 @@ class View(TemplateView):
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
             else:
-                messages.error(request, 'Invalid password!')
+                messages.error(request, 'Invalid credentials!')
         form = UserForm()
         kind = 2
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
@@ -71,7 +69,8 @@ class View(TemplateView):
         form = AuthenticationForm()
         kind = 3
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
-
+    
+    @login_required(login_url='/log_in')
     def dashboard(request):
         tickets = None
         if request.user.has_perm('main.create_tickets'):
@@ -83,6 +82,7 @@ class View(TemplateView):
             return render(request, 'dashboard.html', {'info':info, 'tickets':tickets})
         return render(request, 'dashboard.html')
     
+    @login_required(login_url='/log_in')
     def profile(request):
         if request.method == 'POST':
             if len(request.POST.get('change-username')) > 0:
@@ -106,6 +106,8 @@ class Tickets(TemplateView):
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty ticket!')
+                elif len(form.data.get('title')) == 0:
+                    messages.error(request, 'Empty title!')
                 else:
                     curr = form.save(commit=False)
                     curr.author = request.user
@@ -145,8 +147,13 @@ class Tickets(TemplateView):
         ticket = TicketModel.objects.get(pk=id)
         form = TicketModelForm(request.POST or None, instance=ticket)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/tickets')
+            if len(form.data.get('text')) == 0:
+                messages.error(request, 'Empty answer!')
+            elif len(form.data.get('title')) == 0:
+                messages.error(request, 'Empty title!')
+            else:
+                form.save()
+                return HttpResponseRedirect('/tickets')
         return render(request, 'send_ticket.html', {'ticket':ticket, 'form':form})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
@@ -211,6 +218,8 @@ class Tickets(TemplateView):
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty answer!')
+                elif len(form.data.get('title')) == 0:
+                    messages.error(request, 'Empty title!')
                 else:
                     curr = form.save(commit=False)
                     curr.author = request.user
