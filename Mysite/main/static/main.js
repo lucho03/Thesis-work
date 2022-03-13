@@ -14,10 +14,10 @@ $("#file-id").on("change", function() {
 
 function click_row(id_row, id_ticket, permission) {
     if(permission === 'True') {
-        url = window.location.href.replace('dashboard', 'list_tickets#card-'+id_ticket);
+        url = window.location.href.replace('dashboard', 'list_tickets#container-ticket-'+id_ticket);
     }
     else {
-        url = window.location.href.replace('dashboard', 'tickets#card-'+id_ticket);
+        url = window.location.href.replace('dashboard', 'tickets#container-ticket-'+id_ticket);
     }
     $(location).prop('href', url);
 };
