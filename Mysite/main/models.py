@@ -5,10 +5,10 @@ from ckeditor.fields import RichTextField
 
 class TicketModel(models.Model):
     PRIORITIES = (
-        ('1', 'Urgent'),
-        ('2', 'High'),
+        ('4', 'Low'),
         ('3', 'Medium'),
-        ('4', 'Low')
+        ('2', 'High'),
+        ('1', 'Urgent')
     )
     TYPES = (
         ('Q', 'Question'),
@@ -39,11 +39,16 @@ class TicketModel(models.Model):
     def filename(self):
         return os.path.basename(self.file.name)
     
+    def is_from_email(self):
+        return self.author.username.isdigit()
+
     def delete(self, using=None, keep_parents=False):
         storage = self.file.storage
         if len(self.file.name) > 0:
             if storage.exists(self.file.name):
                 storage.delete(self.file.name)
+        if self.is_from_email():
+            self.author.delete()
         super().delete()
 
     class Meta:
