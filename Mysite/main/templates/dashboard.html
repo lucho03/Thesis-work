@@ -6,82 +6,39 @@
 
 {% block content %}
 <div class="container">
-    {% if user.is_authenticated %}
-        <div class="card mt-5" style="width: 70rem;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col" id="dashboard-title">Title</th>
-                        <th scope="col" id="dashboard-type">Type</th>
-                        <th scope="col" id="dashboard-author">Author</th>
-                        <th scope="col" id="dashboard-status">Status</th>
-                        <th scope="col" id="dashboard-date">Date</th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="card-body" style="height: 400px; overflow:auto;">
-                    <table class="table table-hover mb-0 ">
-                        <tbody >
-                            {% for ticket in tickets %}
-                                <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
-                                    <th>{{ticket.title}}</th>
-                                    <td>{{ticket.get_type_display}}</td>
+    <div class="card mt-5" style="width: 70rem;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" id="dashboard-title">Title</th>
+                    <th scope="col" id="dashboard-type">Type</th>
+                    <th scope="col" id="dashboard-author">Author</th>
+                    <th scope="col" id="dashboard-status">Status</th>
+                    <th scope="col" id="dashboard-date">Date</th>
+                </tr>
+            </thead>
+        </table>
+        <div class="card-body" style="height: 400px; overflow:auto;">
+                <table class="table table-hover mb-0 ">
+                    <tbody >
+                        {% for ticket in tickets %}
+                            <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
+                                <th>{{ticket.title}}</th>
+                                <td>{{ticket.get_type_display}}</td>
+                                
+                                {% if ticket.is_from_email %}
+                                    <td><i class="fa-solid fa-envelope ml-4"></i></td>
+                                {% else %}
                                     <td>{{ticket.author}}</td>
-                                    <td>{{ticket.get_status_display}}</td>
-                                    <td>{{ticket.date}}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-            </div>
+                                {% endif %}
+                                
+                                <td>{{ticket.get_status_display}}</td>
+                                <td>{{ticket.date}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
         </div>
-        <div id="response"></div>
-    {% else %}
-        <h3>There aren't users</h3>
-    {% endif %}
-    <script>
-        function click_row(id_row, id_ticket, permission) {
-            if(permission === 'True') {
-                url = window.location.href.replace('dashboard', 'list_tickets#card-'+id_ticket);
-            }
-            else {
-                url = window.location.href.replace('dashboard', 'tickets#card-'+id_ticket);
-            }
-            $(location).prop('href', url);
-        };
-        /*
-        $(document).ready( function() {
-            $.ajax({
-                type: 'GET',
-                url: "{% url 'api_tickets' %}",
-                success: function(data){
-                    alert("Ops");
-                    var instance = JSON.parse(response["data"]);
-                    var fields = instance[0]["fields"];
-                    console.log(instance);
-                }
-            });
-        });
-        */
-    </script>
-    <style>
-        #dashboard-type {
-            position: relative; 
-            left: 45px;
-        }
-
-        #dashboard-title {
-            position: relative; 
-            left: 15px;
-        }
-        #dashboard-status {
-            position: relative;
-            right: 80px;
-        }
-        #dashboard-date {
-            position: relative;
-            right: 215px;
-        }
-    </style>
+    </div>
 </div>
 {% endblock content %}
