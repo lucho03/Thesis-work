@@ -56,10 +56,10 @@ def create_ticket(email_listener, messages):
         else:
             ticket.title = title
             ticket.text = text
-            ticket.file = messages[key].get('attachments')[0].replace('./media/', '')
-            if 'problem' or 'Problem' in text:
-                ticket.type = 'P'
-                ticket.priority = '2'
+            try:
+                ticket.file = messages[key].get('attachments')[0].replace('./media/', '')
+            except Exception:
+                pass
             ticket.save()
 
 def check_emails2():
