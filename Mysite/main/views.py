@@ -240,7 +240,20 @@ class Tickets(TemplateView):
     def knowledge_base(request):
         tickets = TicketModel.objects.all().filter(status='C').order_by('priority')
         comments = CommentTicketModel.objects.all()
-        paginator = Paginator(tickets, 3)
-        page_number = request.GET.get('page')
-        object = paginator.get_page(page_number)
+        if tickets.count() <= 3:
+            object = tickets
+        else:
+            paginator = Paginator(tickets, 3)
+            page_number = request.GET.get('page')
+            object = paginator.get_page(page_number)
+        if request.POST.get('file-button-name') is not None:
+            id = int(request.POST.get('file-button-name'))
+            ticket = tickets.get(id=id)
+            filepath = str(ticket.file)
+            return FileResponse(open('media/' + filepath, 'rb'))
+        if request.POST.get('delete') is not None:
+            id = int(request.POST.get('delete'))
+            ticket = tickets.get(id=id)
+            ticket.delete()
+            return HttpResponseRedirect('/knowledge_base?page=' + str(object.number))
         return render(request, 'knowledge_base.html', {'tickets':object, 'comments':comments})
