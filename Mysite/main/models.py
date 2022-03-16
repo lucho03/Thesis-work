@@ -2,6 +2,7 @@ import os
 from django.contrib.auth.models import User
 from django.db import models
 from ckeditor.fields import RichTextField
+from django.utils.html import strip_tags
 
 class TicketModel(models.Model):
     PRIORITIES = (
@@ -20,8 +21,6 @@ class TicketModel(models.Model):
     STATUSES = (
         ('N', 'New'),
         ('O', 'Open'),
-        ('P', 'Pending'),
-        ('R', 'Resolved'),
         ('C', 'Closed')
     )
 
@@ -41,6 +40,15 @@ class TicketModel(models.Model):
     
     def is_from_email(self):
         return self.author.username.isdigit()
+    
+    def clear_text(self):
+        return strip_tags(self.text)
+    
+    def author_username(self):
+        if self.is_from_email():
+            return self.author.email
+        else:
+            return self.author.username
 
     def delete(self, using=None, keep_parents=False):
         storage = self.file.storage
@@ -66,6 +74,12 @@ class AnswerModel(models.Model):
     answer_comments = models.IntegerField(default=0)
     number = models.IntegerField(default=0)
     lock = models.BooleanField(default=False)
+
+    def clear_text(self):
+        return strip_tags(self.text)
+    
+    def author_username(self):
+        return self.author.username
 
 class CommentTicketModel(models.Model):
     ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
