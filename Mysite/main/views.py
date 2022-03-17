@@ -164,6 +164,10 @@ class Tickets(TemplateView):
         if request.POST.get('comment') is not None:
             id = int(request.POST.get('comment'))
             answer = answers.get(id=id)
+            if answer.lock == True:
+                    if answer.author != request.user:
+                        messages.error(request, 'This answer is locked. You cannot reply!')
+                        return HttpResponseRedirect('/view_answer/{}'.format(ticket.id))
             answer.answer_comments += 1
             comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more'), number=answer.answer_comments)
             comment.save()
@@ -204,6 +208,10 @@ class Tickets(TemplateView):
             if request.POST.get('comment') is not None:
                 id = int(request.POST.get('comment'))
                 answer = answers.get(id=id)
+                if answer.lock == True:
+                    if answer.author != request.user:
+                        messages.error(request, 'This answer is locked. You cannot reply!')
+                        return HttpResponseRedirect('/answer/{}'.format(ticket.id))
                 answer.answer_comments += 1
                 comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more'), number=answer.answer_comments)
                 answer.save()
@@ -231,7 +239,7 @@ class Tickets(TemplateView):
                         curr.lock = True
                     curr.save()
                     ticket.save()
-                    if request.POST.get('send_to_mail') == 'yes':
+                    if request.POST.get('send_to_mail') == 'yes' or ticket.is_from_email():
                         send_answering_email(ticket.title, ticket.text, curr.text, request.user.username, ticket.author.email)
                     return HttpResponseRedirect('/list_tickets')
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers, 'comments':comments})
