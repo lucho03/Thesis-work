@@ -1,5 +1,6 @@
+from re import search
 from mysite import settings
-from .models import TicketModel
+from .models import TicketModel, AnswerModel, CommentAnswerModel
 from email_listener import EmailListener
 from threading import Thread
 from django.contrib.auth.models import User
@@ -35,10 +36,19 @@ def send_erasing_email(title, text, reason, agent, receiver):
         fail_silently=False
     )
 
-def send_answering_email(title, text, answer, agent, receiver):
+def send_answering_email(title, id, text, answer, agent, receiver):
     send_mail(
         'You have an answer of \'' + reduction(title) + '\'',
-        'Ticket: ' + text + '\n\nAnswer: ' + answer + '\nSent by ' + agent,
+        'ID: ' + str(id) + '\nTicket: ' + text + '\n\nAnswer: ' + answer + '\nSent by ' + agent,
+        settings.EMAIL_HOST_USER,
+        [receiver],
+        fail_silently=False
+    )
+
+def send_invitation_email(receiver):
+    send_mail(
+        'Invitation',
+        'Hello, \nYou have an invitation to join our team. \nPlease open this registration form: http://127.0.0.1:8000/register_agent',
         settings.EMAIL_HOST_USER,
         [receiver],
         fail_silently=False
@@ -50,18 +60,33 @@ def create_ticket(email_listener, messages):
         author_email = key.split('_')[1]
         title = messages[key].get('Subject')
         text = messages[key].get('Plain_Text')
-        ticket = TicketModel.objects.create(author=User.objects.create(username=name, email=author_email))
-        if len(text) == 0:
-            return
-        else:
-            ticket.title = title
-            ticket.text = text
+        if 'Re: ' in title:
             try:
-                ticket.file = messages[key].get('attachments')[0].replace('./media/', '')
+                result = search('ID: (.*)\n', text)
+                print(result.group(1))
+                answer = AnswerModel.objects.get(pk=result.group(1))
+                arr = text.split('=')
+                print(arr[0])
+                answer.answer_comments += 1
+                comment = CommentAnswerModel.objects.create(answer=answer, author='Email', text=arr[0], number=answer.answer_comments)
+                answer.save()
+                comment.save()
             except Exception:
+                print('Invalid response sent!')
                 pass
-            ticket.save()
-
+        else:
+            ticket = TicketModel.objects.create(author=User.objects.create(username=name, email=author_email))
+            if len(text) == 0:
+                return
+            else:
+                ticket.title = title
+                ticket.text = text
+                try:
+                    ticket.file = messages[key].get('attachments')[0].replace('./media/', '')
+                except Exception:
+                    pass
+                ticket.save()
+        
 def check_emails2():
     manager = EmailManager(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
     messages = manager.read()
