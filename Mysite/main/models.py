@@ -83,13 +83,12 @@ class AnswerModel(models.Model):
 
 class CommentTicketModel(models.Model):
     ticket = models.ForeignKey(TicketModel, on_delete=models.CASCADE)
-    text = models.TextField(default='T')
+    author = models.TextField(default='Commentar')
+    text = models.TextField(default='Text')
     number = models.IntegerField(default=0)
 
 class CommentAnswerModel(models.Model):
     answer = models.ForeignKey(AnswerModel, on_delete=models.CASCADE)
-    text = models.TextField(default='T')
+    author = models.TextField(default='Commentar')
+    text = models.TextField(default='Text')
     number = models.IntegerField(default=0)
-
-class RegisterAgent(models.Model):
-    email = models.EmailField(default='example@gmail.com')
