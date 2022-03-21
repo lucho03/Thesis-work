@@ -1,5 +1,6 @@
+import re
 from django.core.paginator import Paginator
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse, HttpResponseForbidden
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
@@ -10,10 +11,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission, User
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
-from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
+from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email, send_invitation_email
+
+from rest_framework.decorators import api_view
 
 #check_emails()
 
@@ -38,6 +42,7 @@ class View(TemplateView):
     def register(request):
         if request.method == 'POST':
             form = UserForm(request.POST)
+            print(request.POST)
             if form.is_valid():
                 user = form.save()
                 user.user_permissions.add(Permission.objects.get(name='can create tickets'))
@@ -166,10 +171,9 @@ class Tickets(TemplateView):
             answer = answers.get(id=id)
             if answer.lock == True:
                     if answer.author != request.user:
-                        messages.error(request, 'This answer is locked. You cannot reply!')
-                        return HttpResponseRedirect('/view_answer/{}'.format(ticket.id))
+                        return HttpResponseForbidden('<h1><strong>Forbidden action!</strong></h1>')
             answer.answer_comments += 1
-            comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more'), number=answer.answer_comments)
+            comment = CommentAnswerModel.objects.create(answer=answer, author=request.user.username, text=request.POST.get('more'), number=answer.answer_comments)
             comment.save()
             answer.save()
         return render(request, 'answer.html', {'ticket':ticket, 'answers':answers, 'comments':comments})
@@ -210,10 +214,9 @@ class Tickets(TemplateView):
                 answer = answers.get(id=id)
                 if answer.lock == True:
                     if answer.author != request.user:
-                        messages.error(request, 'This answer is locked. You cannot reply!')
-                        return HttpResponseRedirect('/answer/{}'.format(ticket.id))
+                        return HttpResponseForbidden('<h1><strong>Forbidden action!</strong></h1>')
                 answer.answer_comments += 1
-                comment = CommentAnswerModel.objects.create(answer=answer, text=request.POST.get('more'), number=answer.answer_comments)
+                comment = CommentAnswerModel.objects.create(answer=answer, author=request.user.username, text=request.POST.get('more'), number=answer.answer_comments)
                 answer.save()
                 comment.save()
                 return HttpResponseRedirect('/answer/{}'.format(ticket.id))
@@ -240,7 +243,7 @@ class Tickets(TemplateView):
                     curr.save()
                     ticket.save()
                     if request.POST.get('send_to_mail') == 'yes' or ticket.is_from_email():
-                        send_answering_email(ticket.title, ticket.text, curr.text, request.user.username, ticket.author.email)
+                        send_answering_email(ticket.title, curr.id, ticket.text, curr.text, request.user.username, ticket.author.email)
                     return HttpResponseRedirect('/list_tickets')
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers, 'comments':comments})
     
