@@ -2,7 +2,17 @@
 
 {% block nav-global %}
 <div>
-    <h1 style="color: rgb(223, 223, 83);">HelpDesk System</h1>
+    <input class="vTextField" id="input" placeholder="Send invitation email to new agents">
+    <button class="button" type="submit" id="op" onclick="btnFun();">proba</button>
+    <p><strong>Send invitation email to new employee</strong></p>
+    <script>
+        function btnFun() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://127.0.0.1:8000/api/invitation");
+            var element = document.getElementById('input');
+            xhr.send(element.value);
+            element.value = "";
+        }
+    </script>
 </div>
-{{ block.super }}
 {% endblock %}
