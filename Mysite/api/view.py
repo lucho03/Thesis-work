@@ -1,6 +1,9 @@
-from django.http import JsonResponse
+from telnetlib import STATUS
+from django.http import JsonResponse, HttpResponse
 from main.models import AnswerModel, CommentAnswerModel, CommentTicketModel, TicketModel
 from .serializer import TicketSerializer, AnswerSerializer, CommentAnswerSerializer, CommentTicketSerializer
+from main.emails import send_invitation_email
+from django.views.decorators.csrf import csrf_exempt
 
 tickets = TicketModel.objects.all()
 serializer_tickets = TicketSerializer(tickets, many=True)
@@ -37,3 +40,12 @@ def data(request):
                             }, 
                             status=200
                         )
+
+@csrf_exempt
+def invitation(request):
+    try:
+        email = request.body.decode()
+        send_invitation_email(email)
+    except Exception:
+        pass
+    return HttpResponse('OK!')
