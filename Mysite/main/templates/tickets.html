@@ -44,7 +44,9 @@
                     </div>
                     {% if perms.main.answer_tickets %}
                         {% if ticket.priority == '1' %}
-                            <button class="btn btn-danger mt-2 btn-block" type="button" data-toggle="modal" data-target="#meet-{{ticket.id}}">Create Google Meet</button>
+                            <button class="btn btn-danger mt-2 btn-block" type="button" data-toggle="modal" data-target="#meet-{{ticket.id}}">
+                                Create Google Meet
+                            </button>
                         {% endif %}
                     {% else %}
                         {% if ticket.num_answers == 0 %}
@@ -112,13 +114,19 @@
                                 Answer
                                 <span class="badge badge-light">{{ticket.num_answers}}</span>
                             </button>
-                            <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#remove-{{ticket.id}}">Remove</button>
+                            <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#remove-{{ticket.id}}">
+                                Remove
+                            </button>
                         {% endif %}
                         {% if perms.main.rewrite_tickets %}
                             {% if ticket.status == 'N' %}
-                                <button class="btn btn-info mr-1" role="button" value="{{ticket.id}}" name="change">Change</button>
+                                <button class="btn btn-info mr-1" role="button" value="{{ticket.id}}" name="change">
+                                    Change
+                                </button>
                             {% elif ticket.status == 'O' %}
-                                <button class="btn btn-info mr-1" type="button" data-toggle="modal" data-target="#comment-{{ticket.id}}">Comment</button>
+                                <button class="btn btn-info mr-1" type="button" data-toggle="modal" data-target="#comment-{{ticket.id}}">
+                                    Comment
+                                </button>
                             {% endif %}
                         {% endif %}
                     </div>

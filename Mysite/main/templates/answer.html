@@ -72,12 +72,18 @@
                                 <button class="btn btn-info ml-1" disabled>Add a comment</button>
                                 {% elif answer.lock == True %}
                                     {% if answer.author != user %}
-                                        <button class="btn btn-info ml-1" disabled data-target="tooltip" title="This answer is locked">Add a comment</button>
+                                        <button class="btn btn-info ml-1" disabled data-target="tooltip" title="This answer is locked">
+                                            Add a comment
+                                        </button>
                                     {% else %}
-                                        <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#comment-{{answer.id}}">Add a comment</button>
+                                        <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#comment-{{answer.id}}">
+                                            Add a comment
+                                        </button>
                                     {% endif %}
                                 {% else %}
-                                <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#comment-{{answer.id}}">Add a comment</button>
+                                <button class="btn btn-info ml-1" type="button" data-toggle="modal" data-target="#comment-{{answer.id}}">
+                                    Add a comment
+                                </button>
                                 {% endif %}
                             </div>
                         </li>
@@ -129,10 +135,14 @@
                         </button>
                     </div>
                     <div class="col text-center">
-                        <button type="submit" class="btn btn-warning" value="yes" name="send_to_mail">Answer and send to mail</button>
+                        <button type="submit" class="btn btn-warning" value="yes" name="send_to_mail">
+                            Answer and send to mail
+                        </button>
                     </div>
                     <div class="col text-right">
-                        <button type="submit" class="btn btn-danger" value="{{ticket.id}}" name="close_ticket">Close Ticket</button>
+                        <button type="submit" class="btn btn-danger" value="{{ticket.id}}" name="close_ticket">
+                            Close Ticket
+                        </button>
                     </div>
                 </div>
             </div>

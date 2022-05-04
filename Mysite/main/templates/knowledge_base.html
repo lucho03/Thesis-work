@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    <title>Tickets</title>
+    <title>Knowledge Base</title>
 {% endblock %}
 
 {% block content %}
@@ -129,19 +129,25 @@
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="?page={{ tickets.previous_page_number }}">{{tickets.previous_page_number}}</a>
+                <a class="page-link" href="?page={{ tickets.previous_page_number }}">
+                    {{tickets.previous_page_number}}
+                </a>
             </li>
         {% else %}
             <li class="page-item disabled"><a class="page-link"><span>&laquo;</span></a></li>
         {% endif %}
 
         <li class="page-item">
-            <a class="page-link" href="?page={{ tickets.number }}">{{tickets.number}}</a>
+            <a class="page-link" href="?page={{ tickets.number }}">
+                {{tickets.number}}
+            </a>
         </li>
 
         {% if tickets.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ tickets.next_page_number }}">{{tickets.next_page_number}}</a>
+                <a class="page-link" href="?page={{ tickets.next_page_number }}">
+                    {{tickets.next_page_number}}
+                </a>
             </li>
             <li class="page-item">
                 <a class="page-link" href="?page={{ tickets.next_page_number }}">

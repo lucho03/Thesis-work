@@ -19,7 +19,7 @@ from .emails import check_emails, send_erasing_email, send_answering_email, send
 
 from rest_framework.decorators import api_view
 
-#check_emails()
+check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -82,10 +82,7 @@ class View(TemplateView):
             tickets = TicketModel.objects.all().filter(author=request.user).exclude(status='C')
         if request.user.has_perm('main.answer_tickets'):
             tickets = TicketModel.objects.all().exclude(status='C')
-        if tickets is not None:
-            info = [tickets.count(), tickets.filter(priority='1').count(), tickets.filter(priority='2').count(), tickets.filter(priority='3').count(), tickets.filter(priority='4').count()]
-            return render(request, 'dashboard.html', {'info':info, 'tickets':tickets})
-        return render(request, 'dashboard.html')
+        return render(request, 'dashboard.html', {'tickets':tickets})
     
     @login_required(login_url='/log_in')
     def profile(request):
@@ -126,7 +123,6 @@ class Tickets(TemplateView):
     def get_tickets(request):
         tickets = TicketModel.objects.all().filter(author=request.user).order_by('priority')
         comments = CommentTicketModel.objects.all()
-        more = [[comment for comment in comments.all().filter(ticket=ticket)] for ticket in tickets.all()]
         if request.POST.get('change') is not None:
             id = int(request.POST.get('change'))
             return HttpResponseRedirect(reverse('rewrite', kwargs={'id':id}))
@@ -137,7 +133,11 @@ class Tickets(TemplateView):
             id = int(request.POST.get('comment'))
             ticket = tickets.get(id=id)
             ticket.ticket_comments += 1
-            comment = CommentTicketModel.objects.create(ticket=ticket, text=request.POST.get('more-info'), number=ticket.ticket_comments)
+            comment = CommentTicketModel.objects.create(
+                                                        ticket=ticket, 
+                                                        text=request.POST.get('more-info'), 
+                                                        number=ticket.ticket_comments
+                                                        )
             comment.save()
             ticket.save()
         if request.POST.get('file-button-name') is not None:
@@ -145,7 +145,7 @@ class Tickets(TemplateView):
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
             return FileResponse(open('media/' + filepath, 'rb'))
-        return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments, 'more':more})
+        return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.rewrite_tickets', raise_exception=True)
     def rewrite(request, id):
@@ -173,7 +173,12 @@ class Tickets(TemplateView):
                     if answer.author != request.user:
                         return HttpResponseForbidden('<h1><strong>Forbidden action!</strong></h1>')
             answer.answer_comments += 1
-            comment = CommentAnswerModel.objects.create(answer=answer, author=request.user.username, text=request.POST.get('more'), number=answer.answer_comments)
+            comment = CommentAnswerModel.objects.create(
+                                                        answer=answer, 
+                                                        author=request.user.username, 
+                                                        text=request.POST.get('more'), 
+                                                        number=answer.answer_comments
+                                                        )
             comment.save()
             answer.save()
         return render(request, 'answer.html', {'ticket':ticket, 'answers':answers, 'comments':comments})
@@ -188,7 +193,13 @@ class Tickets(TemplateView):
         if request.POST.get('delete') is not None:
             id = int(request.POST.get('delete'))
             ticket = tickets.get(id=id)
-            send_erasing_email(ticket.title, ticket.text, request.POST.get('because'), request.user.username, ticket.author.email)
+            send_erasing_email(
+                                ticket.title, 
+                                ticket.text, 
+                                request.POST.get('because'), 
+                                request.user.username, 
+                                ticket.author.email
+                                )
             ticket.delete()
         if request.POST.get('file-button-name') is not None:
             id = int(request.POST.get('file-button-name'))
@@ -199,7 +210,6 @@ class Tickets(TemplateView):
             id = int(request.POST.get('meeting'))
             ticket = tickets.get(id=id)
             send_meeting_email(ticket.title, request.POST.get('meet'), ticket.author.email)
-        
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
@@ -216,7 +226,12 @@ class Tickets(TemplateView):
                     if answer.author != request.user:
                         return HttpResponseForbidden('<h1><strong>Forbidden action!</strong></h1>')
                 answer.answer_comments += 1
-                comment = CommentAnswerModel.objects.create(answer=answer, author=request.user.username, text=request.POST.get('more'), number=answer.answer_comments)
+                comment = CommentAnswerModel.objects.create(
+                                                                answer=answer, 
+                                                                author=request.user.username, 
+                                                                text=request.POST.get('more'), 
+                                                                number=answer.answer_comments
+                                                            )
                 answer.save()
                 comment.save()
                 return HttpResponseRedirect('/answer/{}'.format(ticket.id))
@@ -243,7 +258,14 @@ class Tickets(TemplateView):
                     curr.save()
                     ticket.save()
                     if request.POST.get('send_to_mail') == 'yes' or ticket.is_from_email():
-                        send_answering_email(ticket.title, curr.id, ticket.text, curr.text, request.user.username, ticket.author.email)
+                        send_answering_email(
+                                                ticket.title, 
+                                                curr.id, 
+                                                ticket.text, 
+                                                curr.text, 
+                                                request.user.username, 
+                                                ticket.author.email
+                                            )
                     return HttpResponseRedirect('/list_tickets')
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers, 'comments':comments})
     

@@ -1,4 +1,3 @@
-from telnetlib import STATUS
 from django.http import JsonResponse, HttpResponse
 from main.models import AnswerModel, CommentAnswerModel, CommentTicketModel, TicketModel
 from .serializer import TicketSerializer, AnswerSerializer, CommentAnswerSerializer, CommentTicketSerializer
@@ -48,4 +47,5 @@ def invitation(request):
         send_invitation_email(email)
     except Exception:
         pass
+        return HttpResponse('Invalid email!')
     return HttpResponse('OK!')

@@ -10,7 +10,7 @@ urlpatterns = [
     path('rewrite/<id>', Tickets.rewrite, name='rewrite'),
     path('view_answer/<id>', Tickets.view_answers, name='view_answers'),
     path('register', View.register, name='register'),
-    path('register_agent', View.register_agent, name='register_agent'),
+    path('register_agent24051914', View.register_agent, name='register_agent'),
     path('logout_user', View.logout_user),
     path('log_in', View.log_in),
     path('list_tickets', Tickets.list_tickets),

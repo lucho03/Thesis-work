@@ -7,11 +7,6 @@ function enable(input_id, button_id) {
     }
 }
 
-$("#file-id").on("change", function() {
-    var fileName = $(this).val().split("\\").pop();
-    $(this).siblings("#file-label-id").addClass("selected").html(fileName);
-});
-
 function click_row(id_row, id_ticket, permission) {
     if(permission === 'True') {
         url = window.location.href.replace('dashboard', 'list_tickets#container-ticket-'+id_ticket);

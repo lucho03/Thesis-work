@@ -37,13 +37,13 @@ class TicketModel(models.Model):
 
     def filename(self):
         return os.path.basename(self.file.name)
-    
+
     def is_from_email(self):
         return self.author.username.isdigit()
-    
+
     def clear_text(self):
         return strip_tags(self.text)
-    
+
     def author_username(self):
         if self.is_from_email():
             return self.author.email
@@ -77,7 +77,7 @@ class AnswerModel(models.Model):
 
     def clear_text(self):
         return strip_tags(self.text)
-    
+
     def author_username(self):
         return self.author.username
 
