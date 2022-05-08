@@ -11,9 +11,10 @@ from emailpy import EmailManager
 dir = "Inbox"
 attachment_dir = "./media"
 emails = EmailListener(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD, dir, attachment_dir)
-emails.login()
+#emails.login()
 
 def check_emails():
+    #Heroku work on 550 hours
     timeout = 550*60
     t = Thread(target=emails.listen, args=[timeout, create_ticket])
     t.start()

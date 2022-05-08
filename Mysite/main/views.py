@@ -9,9 +9,10 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission, AnonymousUser, User
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
+from pytest import Instance
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
@@ -19,13 +20,20 @@ from .emails import check_emails, send_erasing_email, send_answering_email, send
 
 from rest_framework.decorators import api_view
 
-check_emails()
+#check_emails()
 
 class View(TemplateView):
     def main_page(request):
-        return render(request, 'main_page.html')
+        if isinstance(request.user, AnonymousUser):
+            return render(request, 'main_page.html')
+        else:
+            return HttpResponseRedirect('/dashboard')
+        
     
     def register_agent(request):
+        kind = 1
+        if isinstance(request.user, User):
+            return HttpResponseRedirect('/dashboard')
         if request.method == 'POST':
             form = AgentForm(request.POST)
             if form.is_valid():
@@ -33,26 +41,24 @@ class View(TemplateView):
                 user.user_permissions.add(Permission.objects.get(name='can answer tickets'))
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
-            else:
-                messages.error(request, 'Invalid credentials!')
-        form = AgentForm()
-        kind = 1
+        else:
+            form = AgentForm()
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
     def register(request):
+        kind = 2
+        if isinstance(request.user, User):
+            return HttpResponseRedirect('/dashboard')
         if request.method == 'POST':
             form = UserForm(request.POST)
-            print(request.POST)
             if form.is_valid():
                 user = form.save()
                 user.user_permissions.add(Permission.objects.get(name='can create tickets'))
                 user.user_permissions.add(Permission.objects.get(name='can change tickets'))
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
-            else:
-                messages.error(request, 'Invalid credentials!')
-        form = UserForm()
-        kind = 2
+        else:
+            form = UserForm()
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
     def logout_user(request):
@@ -60,6 +66,9 @@ class View(TemplateView):
         return HttpResponseRedirect('/')
     
     def log_in(request):
+        kind = 3
+        if isinstance(request.user, User):
+            return HttpResponseRedirect('/dashboard')
         if request.method == 'POST':
             form = AuthenticationForm(request, data=request.POST)
             if form.is_valid:
@@ -70,9 +79,8 @@ class View(TemplateView):
                     login(request, user)
                     return HttpResponseRedirect('/dashboard')
                 else:
-                    messages.error(request, 'Wrong username or password!')
+                    messages.error(request, 'Wrong username or password')
         form = AuthenticationForm()
-        kind = 3
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
     @login_required(login_url='/log_in')
@@ -216,8 +224,11 @@ class Tickets(TemplateView):
     def answer(request, id):
         ticket = TicketModel.objects.get(pk=id)
         answers = AnswerModel.objects.all().filter(ticket=ticket).order_by('number')
-        form = AnswerModelForm(request.POST)
         comments = CommentAnswerModel.objects.all()
+        if ticket.status == 'C':
+            return render(request, 'answer.html', {'ticket':ticket, 'answers':answers, 'comments':comments})
+
+        form = AnswerModelForm(request.POST)
         if request.method == 'POST':
             if request.POST.get('comment') is not None:
                 id = int(request.POST.get('comment'))
@@ -289,4 +300,7 @@ class Tickets(TemplateView):
             ticket = tickets.get(id=id)
             ticket.delete()
             return HttpResponseRedirect('/knowledge_base?page=' + str(object.number))
+        if request.POST.get('answers') is not None:
+            id = int(request.POST.get('answers'))
+            return HttpResponseRedirect(reverse('answer', kwargs={'id':id}))
         return render(request, 'knowledge_base.html', {'tickets':object, 'comments':comments})

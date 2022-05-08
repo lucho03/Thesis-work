@@ -111,7 +111,7 @@
             {% endfor %}
         </div>
         
-        {% if perms.main.answer_tickets %}
+        {% if perms.main.answer_tickets and ticket.status != 'C' %}
         <div class="card mb-2">
             <div class="card-body">
                 {{ form.title|as_crispy_field }}
