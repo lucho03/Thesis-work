@@ -1,6 +1,5 @@
-import re
 from django.core.paginator import Paginator
-from django.http import FileResponse, HttpResponse, HttpResponseForbidden
+from django.http import FileResponse, HttpResponseForbidden
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
@@ -11,16 +10,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission, AnonymousUser, User
 from django.contrib.auth.decorators import login_required, permission_required
-from django.views.decorators.csrf import csrf_exempt
-from pytest import Instance
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
-from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email, send_invitation_email
+from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
 
-from rest_framework.decorators import api_view
-
-#check_emails()
+check_emails()
 
 class View(TemplateView):
     def main_page(request):
