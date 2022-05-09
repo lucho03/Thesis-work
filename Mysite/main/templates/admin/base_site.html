@@ -8,7 +8,7 @@
     <script>
         function btnFun() {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://127.0.0.1:8000/api/invitation");
+            xhr.open("POST", "http://127.0.0.1:8000/api/v1/invitation");
             var element = document.getElementById('input');
             xhr.send(element.value);
             element.value = "";
