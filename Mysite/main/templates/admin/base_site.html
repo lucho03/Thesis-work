@@ -11,7 +11,7 @@
             xhr.open("POST", "http://127.0.0.1:8000/api/v1/invitation");
             var element = document.getElementById('input');
             xhr.send(element.value);
-            console.log(element);
+            console.log(element.value);
             element.value = "";
         }
     </script>
