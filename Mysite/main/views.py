@@ -1,3 +1,5 @@
+from array import array
+import django
 from django.core.paginator import Paginator
 from django.http import FileResponse, HttpResponseForbidden
 from django.urls import reverse
@@ -15,7 +17,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
 
-check_emails()
+#check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -294,7 +296,10 @@ class Tickets(TemplateView):
             id = int(request.POST.get('delete'))
             ticket = tickets.get(id=id)
             ticket.delete()
-            return HttpResponseRedirect('/knowledge_base?page=' + str(object.number))
+            if isinstance(object, django.core.paginator.Page):
+                return HttpResponseRedirect('/knowledge_base?page=' + str(object.number))
+            else:
+                return HttpResponseRedirect('/knowledge_base')
         if request.POST.get('answers') is not None:
             id = int(request.POST.get('answers'))
             return HttpResponseRedirect(reverse('answer', kwargs={'id':id}))
