@@ -47,6 +47,7 @@ def send_answering_email(title, id, text, answer, agent, receiver):
     )
 
 def send_invitation_email(receiver):
+    print(settings.REGISTER_AGENT_URL)
     send_mail(
         'Invitation',
         'Hello, \nYou have an invitation to join our team. \nPlease open this registration form: https://protected-cliffs-91463.herokuapp.com/register_agent24051914',

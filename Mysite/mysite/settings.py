@@ -16,6 +16,7 @@ import sys
 import django_heroku
 import environ
 from pathlib import Path
+from random import randint
 
 env = environ.Env()
 environ.Env.read_env()
@@ -179,6 +180,8 @@ CKEDITOR_CONFIGS = {
         'resize_enabled':False
     }
 }
+
+REGISTER_AGENT_URL = randint(0, 1000000)
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

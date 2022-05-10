@@ -1,5 +1,8 @@
 from django.urls import path
 from main.views import Tickets, View
+from mysite import settings
+
+print(settings.REGISTER_AGENT_URL)
 
 urlpatterns = [
     path('', View.main_page),
