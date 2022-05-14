@@ -221,7 +221,10 @@ class Tickets(TemplateView):
             id = int(request.POST.get('file-button-name'))
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
-            return FileResponse(open('media/' + filepath, 'rb'))
+            try:
+                return FileResponse(open('media/' + filepath, 'rb'))
+            except Exception:
+                return HttpResponseNotFound('<h1><strong>File not found</strong></h1>')
         if request.POST.get('meeting') is not None:
             id = int(request.POST.get('meeting'))
             ticket = tickets.get(id=id)
@@ -302,7 +305,10 @@ class Tickets(TemplateView):
             id = int(request.POST.get('file-button-name'))
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
-            return FileResponse(open('media/' + filepath, 'rb'))
+            try:
+                return FileResponse(open('media/' + filepath, 'rb'))
+            except Exception:
+                return HttpResponseNotFound('<h1><strong>File not found</strong></h1>')
         if request.POST.get('delete') is not None:
             id = int(request.POST.get('delete'))
             ticket = tickets.get(id=id)
