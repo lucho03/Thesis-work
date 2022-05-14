@@ -2,7 +2,7 @@ from django import forms
 from django.forms import TextInput, Textarea
 from .models import AnswerModel, TicketModel
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 
 class UserForm(UserCreationForm):
     class Meta:
@@ -11,6 +11,7 @@ class UserForm(UserCreationForm):
     
     def save(self):
         user = super(UserForm, self).save(commit=True)
+        user.user_permissions.add(Permission.objects.get(name='can create tickets'))
         return user
 
 class AgentForm(UserCreationForm):
@@ -20,6 +21,7 @@ class AgentForm(UserCreationForm):
 
     def save(self):
         user = super(AgentForm, self).save(commit=True)
+        user.user_permissions.add(Permission.objects.get(name='can answer tickets'))
         return user
 
 class TicketModelForm(forms.ModelForm):
