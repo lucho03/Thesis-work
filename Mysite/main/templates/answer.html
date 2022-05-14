@@ -31,7 +31,7 @@
                 <form method="post">
                 {% csrf_token %}
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
+                        <li class="list-group-item" id="ticket-answer-{{answer.number}}">
                             <blockquote class="blockquote">
                                 <p class="mb-3">{{ answer.number }}. {{ answer.title }}</p>
                                 <div class="ml-3">
