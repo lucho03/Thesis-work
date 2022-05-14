@@ -62,7 +62,6 @@ class TicketModel(models.Model):
     class Meta:
         permissions = (
             ('create_tickets', 'can create tickets'),
-            ('rewrite_tickets', 'can change tickets'),
             ('answer_tickets', 'can answer tickets')
         )
 
