@@ -25,16 +25,42 @@ div .name {
 }
 
 #about_project_container {
-    height: 25rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 #info_container {
-    position:relative;
-    top: 7rem;
-    margin-left: 5rem;
+    color: rgb(122, 122, 122);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-left: 1px solid #ccc;
+}
+
+#info_intro_container {
+    color: rgb(184, 197, 197);
+    margin-top: 5rem;
+    left: 8rem;
+    margin-bottom: 1rem;
+}
+
+#footer_info_container {
+    top: 1rem;
+    margin-left: 10rem;
 }
 
 #card-about {
-    height: 18rem;
-    top: 5rem;
+    color: rgb(184, 197, 197);
+    height: 9rem;
+}
+
+#card-about h4 {
+    color: rgb(95, 104, 104);
+}
+
+#card-about a {
+    color: cadetblue;
+}
+
+#card-about a:hover {
+    color:darkblue;
 }
