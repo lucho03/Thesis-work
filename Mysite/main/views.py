@@ -1,7 +1,6 @@
-from array import array
 import django
 from django.core.paginator import Paginator
-from django.http import FileResponse, HttpResponseForbidden
+from django.http import FileResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
@@ -10,7 +9,7 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Permission, AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser, User
 from django.contrib.auth.decorators import login_required, permission_required
 
 from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
@@ -35,7 +34,6 @@ class View(TemplateView):
             form = AgentForm(request.POST)
             if form.is_valid():
                 user = form.save()
-                user.user_permissions.add(Permission.objects.get(name='can answer tickets'))
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
         else:
@@ -50,8 +48,6 @@ class View(TemplateView):
             form = UserForm(request.POST)
             if form.is_valid():
                 user = form.save()
-                user.user_permissions.add(Permission.objects.get(name='can create tickets'))
-                user.user_permissions.add(Permission.objects.get(name='can change tickets'))
                 login(request, user)
                 return HttpResponseRedirect('/dashboard')
         else:
@@ -75,8 +71,10 @@ class View(TemplateView):
                 if user is not None:
                     login(request, user)
                     return HttpResponseRedirect('/dashboard')
+                elif User.objects.filter(username=username).exists() == False:
+                    messages.error(request, 'Wrong username')
                 else:
-                    messages.error(request, 'Wrong username or password')
+                    messages.error(request, 'Wrong password')
         form = AuthenticationForm()
         return render(request, 'login_user.html', {'form': form, 'kind':kind})
     
@@ -93,7 +91,12 @@ class View(TemplateView):
     def profile(request):
         if request.method == 'POST':
             if len(request.POST.get('change-username')) > 0:
-                request.user.username = request.POST.get('change-username')
+                new_username = request.POST.get('change-username')
+                if User.objects.filter(username=new_username).exists() == True:
+                    messages.error(request, 'This username is in use')
+                else:
+                    request.user.username = request.POST.get('change-username')
+            
             if len(request.POST.get('change-email')) > 0:
                 request.user.email = request.POST.get('change-email')
             if len(request.POST.get('change-first-name')) > 0:
@@ -119,12 +122,16 @@ class Tickets(TemplateView):
                     curr = form.save(commit=False)
                     curr.author = request.user
                     if request.FILES.get('file-name') is not None:
-                        curr.file = request.FILES.get('file-name')
+                        if TicketModel.objects.filter(file=request.FILES.get('file-name')).exists() == True:
+                            messages.error(request, 'File with that name already exists')
+                            return render(request, 'send_ticket.html', {'form':form})
+                        else:
+                            curr.file = request.FILES.get('file-name')
                     curr.save()
                     return HttpResponseRedirect('/tickets')
         return render(request, 'send_ticket.html', {'form':form})
     
-    @permission_required('main.rewrite_tickets', raise_exception=True)
+    @permission_required('main.create_tickets', raise_exception=True)
     def get_tickets(request):
         tickets = TicketModel.objects.all().filter(author=request.user).order_by('priority')
         comments = CommentTicketModel.objects.all()
@@ -149,16 +156,19 @@ class Tickets(TemplateView):
             id = int(request.POST.get('file-button-name'))
             ticket = tickets.get(id=id)
             filepath = str(ticket.file)
-            return FileResponse(open('media/' + filepath, 'rb'))
+            try:
+                return FileResponse(open('media/' + filepath, 'rb'))
+            except Exception:
+                return HttpResponseNotFound('<h1><strong>File not found</strong></h1>')
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
-    @permission_required('main.rewrite_tickets', raise_exception=True)
+    @permission_required('main.create_tickets', raise_exception=True)
     def rewrite(request, id):
         ticket = TicketModel.objects.get(pk=id)
         form = TicketModelForm(request.POST or None, instance=ticket)
         if form.is_valid():
             if len(form.data.get('text')) == 0:
-                messages.error(request, 'Empty answer!')
+                messages.error(request, 'Empty ticket!')
             elif len(form.data.get('title')) == 0:
                 messages.error(request, 'Empty title!')
             else:
@@ -166,7 +176,7 @@ class Tickets(TemplateView):
                 return HttpResponseRedirect('/tickets')
         return render(request, 'send_ticket.html', {'ticket':ticket, 'form':form})
     
-    @permission_required('main.rewrite_tickets', raise_exception=True)
+    @permission_required('main.create_tickets', raise_exception=True)
     def view_answers(request, id):
         ticket = TicketModel.objects.get(pk=id)
         answers = AnswerModel.objects.all().filter(ticket=ticket).order_by('number')
@@ -175,8 +185,8 @@ class Tickets(TemplateView):
             id = int(request.POST.get('comment'))
             answer = answers.get(id=id)
             if answer.lock == True:
-                    if answer.author != request.user:
-                        return HttpResponseForbidden('<h1><strong>Forbidden action!</strong></h1>')
+                if answer.author != request.user:
+                    return HttpResponseForbidden('<h1><strong>Forbidden action!</strong></h1>')
             answer.answer_comments += 1
             comment = CommentAnswerModel.objects.create(
                                                         answer=answer, 
@@ -206,6 +216,7 @@ class Tickets(TemplateView):
                                 ticket.author.email
                                 )
             ticket.delete()
+            return HttpResponseRedirect('/dashboard')
         if request.POST.get('file-button-name') is not None:
             id = int(request.POST.get('file-button-name'))
             ticket = tickets.get(id=id)
@@ -248,7 +259,7 @@ class Tickets(TemplateView):
                 ticket = TicketModel.objects.get(pk=id)
                 ticket.status = 'C'
                 ticket.save()
-                return HttpResponseRedirect('/list_tickets')
+                return HttpResponseRedirect('/dashboard')
             if form.is_valid():
                 if len(form.data.get('text')) == 0:
                     messages.error(request, 'Empty answer!')
@@ -274,7 +285,7 @@ class Tickets(TemplateView):
                                                 request.user.username, 
                                                 ticket.author.email
                                             )
-                    return HttpResponseRedirect('/list_tickets')
+                    return HttpResponseRedirect('/answer/'+str(ticket.id)+'#ticket-answer-'+str(curr.number))
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
