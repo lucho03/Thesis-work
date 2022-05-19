@@ -11,6 +11,7 @@
             <thead>
                 <tr>
                     <th scope="col" id="dashboard-title">Title</th>
+                    <th scope="col" id="dashboard-priority">Priority</th>
                     <th scope="col" id="dashboard-type">Type</th>
                     <th scope="col" id="dashboard-author">Author</th>
                     <th scope="col" id="dashboard-status">Status</th>
@@ -18,26 +19,25 @@
                 </tr>
             </thead>
         </table>
-        <div class="card-body" style="height: 400px; overflow:auto;">
-                <table class="table table-hover mb-0 ">
-                    <tbody >
-                        {% for ticket in tickets %}
-                            <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
-                                <th>{{ticket.title}}</th>
-                                <td>{{ticket.get_type_display}}</td>
-                                
-                                {% if ticket.is_from_email %}
-                                    <td><i class="fa-solid fa-envelope ml-4"></i></td>
-                                {% else %}
-                                    <td>{{ticket.author}}</td>
-                                {% endif %}
-                                
-                                <td>{{ticket.get_status_display}}</td>
-                                <td>{{ticket.date}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="card-body" style="height: 400px; overflow:auto; overflow-x: hidden;">
+            <table class="table table-hover mb-0 ">
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr id="id-{{ticket.id}}" onclick="click_row(id, '{{ticket.id}}', '{{perms.main.answer_tickets}}')">
+                        <th id="dashboard-title-ticket">{{ticket.short_title}}</th>
+                        <td id="dashboard-priority-ticket">{{ticket.get_priority_display}}</td>
+                        <td id="dashboard-type-ticket">{{ticket.get_type_display}}</td>
+                        {% if ticket.is_from_email %}
+                            <td id="dashboard-author-ticket"><i class="fa-solid fa-envelope ml-4"></i></td>
+                        {% else %}
+                            <td id="dashboard-author-ticket">{{ticket.author}}</td>
+                        {% endif %}
+                        <td id="dashboard-status-ticket">{{ticket.get_status_display}}</td>
+                        <td id="dashboard-date-ticket">{{ticket.date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
