@@ -6,15 +6,13 @@ from threading import Thread
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 
-from emailpy import EmailManager
-
 dir = "Inbox"
 attachment_dir = "./media"
 emails = EmailListener(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD, dir, attachment_dir)
 emails.login()
 
 def check_emails():
-    #Heroku work on 550 hours
+    #Heroku work on 550 free dyno hours and listen method takes only minutes
     timeout = 550*60
     t = Thread(target=emails.listen, args=[timeout, create_ticket])
     t.start()
@@ -94,19 +92,6 @@ def create_ticket(email_listener, messages):
                 except Exception:
                     pass
                 ticket.save()
-        
-def check_emails2():
-    manager = EmailManager(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-    messages = manager.read()
-    for message in messages:
-        print(message.sender, message.subject, message.body, message.attachments)
-
-def print_email(email_listener, messages):
-    for key in messages.keys():
-        print(key)
-        print(messages[key])
-        print(messages[key].get('Subject'))
-        print(messages[key].get('Plain_Text'))
 
 def reduction(str):
     if len(str) <= 12:
