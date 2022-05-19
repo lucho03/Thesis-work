@@ -16,7 +16,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
 
-#check_emails()
+check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -82,9 +82,9 @@ class View(TemplateView):
     def dashboard(request):
         tickets = None
         if request.user.has_perm('main.create_tickets'):
-            tickets = TicketModel.objects.all().filter(author=request.user).exclude(status='C')
+            tickets = TicketModel.objects.all().filter(author=request.user).exclude(status='C').order_by('priority')
         if request.user.has_perm('main.answer_tickets'):
-            tickets = TicketModel.objects.all().exclude(status='C')
+            tickets = TicketModel.objects.all().exclude(status='C').order_by('priority')
         return render(request, 'dashboard.html', {'tickets':tickets})
     
     @login_required(login_url='/log_in')
@@ -128,7 +128,7 @@ class Tickets(TemplateView):
                         else:
                             curr.file = request.FILES.get('file-name')
                     curr.save()
-                    return HttpResponseRedirect('/tickets')
+                    return HttpResponseRedirect('/dashboard')
         return render(request, 'send_ticket.html', {'form':form})
     
     @permission_required('main.create_tickets', raise_exception=True)
