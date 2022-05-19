@@ -210,7 +210,7 @@ class Tickets(TemplateView):
             ticket = tickets.get(id=id)
             send_erasing_email(
                                 ticket.title, 
-                                ticket.text, 
+                                ticket.clear_text(), 
                                 request.POST.get('because'), 
                                 request.user.username, 
                                 ticket.author.email
@@ -283,8 +283,8 @@ class Tickets(TemplateView):
                         send_answering_email(
                                                 ticket.title, 
                                                 curr.id, 
-                                                ticket.text, 
-                                                curr.text, 
+                                                ticket.clear_text(), 
+                                                curr.clear_text(), 
                                                 request.user.username, 
                                                 ticket.author.email
                                             )
