@@ -175,6 +175,15 @@ CKEDITOR_CONFIGS = {
         'resize_enabled':False
     },
     'ticket_ckeditor':{
+        'toolbar':'Custom',
+        'toolbar_Custom': [
+            ['Styles'],
+            ['Format'],
+            ['Bold', 'Italic', 'Underline', 'Strike'],
+            ['Link', 'Text color', 'Background', 'Smiley', 'Special insert'],
+            ['Undo', 'Redo'],
+            ['Source']
+        ],
         'width':'915',
         'removePlugins':'elementspath',
         'resize_enabled':False
