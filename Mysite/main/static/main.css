@@ -14,14 +14,64 @@ div .name {
     font-size: small;
 }
 
-.th #dashboard-type {
-    position: relative; 
-    left: 45px;
+#dashboard-title {
+    position: relative;
+    left: 50px;
 }
 
-#title {
-    position: relative; 
-    left: 45px;
+#dashboard-priority {
+    position: relative;
+    left: 50px;
+}
+
+#dashboard-type {
+    position: relative;
+    left: 0px;
+}
+
+#dashboard-author {
+    position: relative;
+    right: 10px;
+}
+
+#dashboard-status {
+    position: relative;
+    right: 65px;
+}
+
+#dashboard-date {
+    position: relative;
+    right: 50px;
+}
+
+#dashboard-title-ticket {
+    position: relative;
+    left: 30px;
+}
+
+#dashboard-priority-ticket {
+    position: relative;
+    left: 30px;
+}
+
+#dashboard-type-ticket {
+    position: relative;
+    left: 50px;
+}
+
+#dashboard-author-ticket {
+    position: relative;
+    left: 65px;
+}
+
+#dashboard-status-ticket {
+    position: relative;
+    left: 90px;
+}
+
+#dashboard-date-ticket {
+    position: relative;
+    left:120px;
 }
 
 #about_project_container {
