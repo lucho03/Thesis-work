@@ -59,6 +59,13 @@ class TicketModel(models.Model):
             self.author.delete()
         super().delete()
 
+    def short_title(self):
+        if len(self.title) <= 9:
+            return self.title
+        else:
+            dots = '...'
+            return self.title[0:7] + dots
+
     class Meta:
         permissions = (
             ('create_tickets', 'can create tickets'),
