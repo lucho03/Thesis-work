@@ -4,7 +4,7 @@ from .models import TicketModel, AnswerModel
 
 class Test(TestCase):
     def setUp(self):
-        self.ticket = TicketModel.objects.create(author=User.objects.create(username='Customer'), text='opa')
+        self.ticket = TicketModel.objects.create(author=User.objects.create(username='Customer'), text='Check')
         self.answer = AnswerModel.objects.create(author=User.objects.create(username='Employee'), ticket=self.ticket, text='Answer')
 
     def test_replying(self):
