@@ -118,7 +118,7 @@
                                 Remove
                             </button>
                         {% endif %}
-                        {% if perms.main.rewrite_tickets %}
+                        {% if perms.main.create_tickets %}
                             {% if ticket.status == 'N' %}
                                 <button class="btn btn-info mr-1" role="button" value="{{ticket.id}}" name="change">
                                     Change
