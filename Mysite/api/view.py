@@ -44,7 +44,7 @@ def data(request):
 def invitation(request):
     try:
         email = request.body.decode()
-        send_invitation_email(email)
+        # send_invitation_email(email)
     except Exception:
         pass
         return HttpResponse('Invalid email!')

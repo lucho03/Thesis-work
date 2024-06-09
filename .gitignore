@@ -1,0 +1,4 @@
+thesis-venv
+Mysite/mysite/.env
+__pycache__
+*.sqlite3

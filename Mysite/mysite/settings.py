@@ -13,7 +13,7 @@ from ast import arg
 from email.policy import default
 import os
 import sys
-import django_heroku
+# import django_heroku
 import environ
 from pathlib import Path
 from random import randint
@@ -84,28 +84,35 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if sys.argv[1:2] == ['test']:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'helpdesk',
-            'USER': 'help',
-            'PASSWORD': '18523',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
+# if sys.argv[1:2] == ['test']:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'helpdesk',
+#             'USER': 'help',
+#             'PASSWORD': '18523',
+#             'HOST': 'localhost',
+#             'PORT': '5432',
+#         }
+#     }
+
 
 
 # Password validation
@@ -193,4 +200,4 @@ CKEDITOR_CONFIGS = {
 REGISTER_AGENT_URL = randint(0, 1000000)
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

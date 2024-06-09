@@ -1,0 +1,37 @@
+asgiref             - https://pypi.org/project/asgiref/
+attrs               - https://pypi.org/project/attrs/
+certifi             - https://pypi.org/project/certifi/
+charset-normalizer  - https://pypi.org/project/charset-normalizer/
+DateTime            - https://pypi.org/project/DateTime/
+dj-database-url     - https://pypi.org/project/dj-database-url/
+Django              - https://pypi.org/project/Django/
+django-ckeditor     - https://pypi.org/project/django-ckeditor/ !important
+django-crispy-forms - https://pypi.org/project/django-crispy-forms/ !important
+django-environ      - https://pypi.org/project/django-environ/ !important
+django-heroku       - https://pypi.org/project/django-heroku/
+django-js-asset     - https://pypi.org/project/django-js-asset/ !important
+djangorestframework - https://pypi.org/project/djangorestframework/
+email-listener      - https://pypi.org/project/email-listener/ !important
+gunicorn            - https://pypi.org/project/gunicorn/
+html2text           - https://pypi.org/project/html2text/
+idna                - https://pypi.org/project/idna/
+IMAPClient          - https://pypi.org/project/IMAPClient/
+iniconfig           - https://pypi.org/project/iniconfig/
+ospy
+packaging           - https://pypi.org/project/packaging/
+pluggy              - https://pypi.org/project/pluggy/ !interesting
+pyproject-toml      - https://pypi.org/project/pyproject-toml/
+psutil              - https://pypi.org/project/psutil/
+psycopg2            - https://pypi.org/project/psycopg2/
+psycopg2-binary     - https://pypi.org/project/psycopg2-binary/
+py
+pyparsing           - https://pypi.org/project/pyparsing/
+pytest              - https://pypi.org/project/pytest/
+pytz                - https://pypi.org/project/pytz/
+requests            - https://pypi.org/project/requests/
+six                 - https://pypi.org/project/six/
+sqlparse            - https://pypi.org/project/sqlparse/
+toml                - https://pypi.org/project/toml/
+urllib3             - https://pypi.org/project/urllib3/
+whitenoise          - https://pypi.org/project/whitenoise/
+zope.interface      - https://pypi.org/project/zope.interface/

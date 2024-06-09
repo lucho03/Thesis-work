@@ -8,13 +8,15 @@ from django.core.mail import send_mail
 
 dir = "Inbox"
 attachment_dir = "./media"
-emails = EmailListener(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD, dir, attachment_dir)
-emails.login()
+print(f'USER ========== {settings.EMAIL_HOST_USER}')
+print(f'PASS ========== {settings.EMAIL_HOST_PASSWORD}')
+# emails = EmailListener(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD, dir, attachment_dir)
+# emails.login()
 
 def check_emails():
     #Heroku work on 550 free dyno hours and listen method takes only minutes
     timeout = 550*60
-    t = Thread(target=emails.listen, args=[timeout, create_ticket])
+    # t = Thread(target=emails.listen, args=[timeout, create_ticket])
     t.start()
 
 def send_meeting_email(title, meet, reciever):

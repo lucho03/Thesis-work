@@ -16,7 +16,7 @@ from .forms import AnswerModelForm, TicketModelForm, UserForm, AgentForm
 from .models import AnswerModel, TicketModel, CommentTicketModel, CommentAnswerModel
 from .emails import check_emails, send_erasing_email, send_answering_email, send_meeting_email
 
-check_emails()
+# check_emails()
 
 class View(TemplateView):
     def main_page(request):
@@ -208,13 +208,13 @@ class Tickets(TemplateView):
         if request.POST.get('delete') is not None:
             id = int(request.POST.get('delete'))
             ticket = tickets.get(id=id)
-            send_erasing_email(
-                                ticket.title, 
-                                ticket.clear_text(), 
-                                request.POST.get('because'), 
-                                request.user.username, 
-                                ticket.author.email
-                                )
+            # send_erasing_email(
+            #                     ticket.title, 
+            #                     ticket.clear_text(), 
+            #                     request.POST.get('because'), -
+            #                     request.user.username, 
+            #                     ticket.author.email
+            #                     )
             ticket.delete()
             return HttpResponseRedirect('/dashboard')
         if request.POST.get('file-button-name') is not None:
@@ -228,7 +228,7 @@ class Tickets(TemplateView):
         if request.POST.get('meeting') is not None:
             id = int(request.POST.get('meeting'))
             ticket = tickets.get(id=id)
-            send_meeting_email(ticket.title, request.POST.get('meet'), ticket.author.email)
+            # send_meeting_email(ticket.title, request.POST.get('meet'), ticket.author.email)
         return render(request, 'tickets.html', {'tickets':tickets, 'comments':comments})
     
     @permission_required('main.answer_tickets', raise_exception=True)
@@ -279,15 +279,15 @@ class Tickets(TemplateView):
                         curr.lock = True
                     curr.save()
                     ticket.save()
-                    if request.POST.get('send_to_mail') == 'yes' or ticket.is_from_email():
-                        send_answering_email(
-                                                ticket.title, 
-                                                curr.id, 
-                                                ticket.clear_text(), 
-                                                curr.clear_text(), 
-                                                request.user.username, 
-                                                ticket.author.email
-                                            )
+                    # if request.POST.get('send_to_mail') == 'yes' or ticket.is_from_email():
+                        # send_answering_email(
+                        #                         ticket.title, 
+                        #                         curr.id, 
+                        #                         ticket.clear_text(), 
+                        #                         curr.clear_text(), 
+                        #                         request.user.username, 
+                        #                         ticket.author.email
+                        #                     )
                     return HttpResponseRedirect('/answer/'+str(ticket.id)+'#ticket-answer-'+str(curr.number))
         return render(request, 'answer.html', {'ticket':ticket, 'form':form, 'answers':answers, 'comments':comments})
     
